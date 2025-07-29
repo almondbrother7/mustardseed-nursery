@@ -1,0 +1,100 @@
+<div class="contact-container">
+  <h1>Let's Garden!</h1>
+
+  <!-- <div class="contact-image-container">
+    <img alt="Downward Dog!" src="assets/images/downward-dog.jpg">
+    <p class="photo-caption">Mayflower</p>
+  </div> -->
+
+  <p>
+    Send an email or use the form below to contact us.
+  </p>
+
+  <ul class="icon-text-list">
+    <li>
+      <span class="material-icons">email</span>
+      <a href="mailto:mustardseednursery7@gmail.com">
+        Email The Mustard Seed Nursery
+      </a>
+    </li>
+  </ul>
+
+  <section class="qr-section">
+    <h2>Quick Access</h2>
+    <p>Scan this QR code to open this site on your phone:</p>
+    <img src="assets/qr-mustardseed-nursery.png" alt="QR Code for mustardseed-nursery.andrewcarey.dev" class="qr-code">
+  </section>
+
+  <section class="map-section">
+    <h2>Located in beautiful Palm Bay, Florida</h2>
+    <iframe 
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d353941.0712147564!2d-80.8013564!3d28.0344585!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88de1245bbd7054f%3A0x503d9c7c6eb9b6a1!2sPalm%20Bay%2C%20FL!5e0!3m2!1sen!2sus!4v1706281743058!5m2!1sen!2sus" 
+      width="100%" 
+      height="250" 
+      style="border:0; border-radius:8px;" 
+      allowfullscreen="" 
+      loading="lazy"
+    ></iframe>
+  </section>
+
+  <section class="upcoming-events-section">
+    <h2>Upcoming Events</h2>
+    <p>Please check back here for upcoming events.</p>
+  </section>
+
+  <section class="share-section">
+    <h2>Share This Page</h2>
+    <p>Know another gardening enthusiast?</p>
+    <a 
+      href="https://api.whatsapp.com/send?text=Check%20out%20this%20Mustard%20Seed%20Nursery%20in%20Palm%20Bay!%20https%3A%2F%2Fmustardseed-nursery.andrewcarey.dev" 
+      target="_blank"
+      class="share-button"
+    >
+      📲 Share on WhatsApp
+    </a>
+    <br><br>
+    <a 
+      href="mailto:?subject=The Mustard Seed Nursery – Palm Bay&body=Hi!%0D%0A%0D%0ACheck out this family-owned, nursery, local to Palm Bay, FL.%0D%0A%0D%0Ahttps://muystardseed-nursery.andrewcarey.dev"
+      class="share-button"
+    >
+      ✉️ Share via Email
+    </a>
+  </section>
+
+  <p>Send us a quick note:</p>
+
+  <!-- Material Contact Form -->
+  <form class="contact-form" (submit)="onSubmit($event)">
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Your Name</mat-label>
+      <input matInput name="name" placeholder="John Doe" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Your Email</mat-label>
+      <input matInput type="email" name="email" placeholder="you@example.com" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Your Message</mat-label>
+      <textarea matInput name="message" rows="5" placeholder="Type your message..." required></textarea>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+    </button>
+
+    <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+    <!-- Hidden field to tag the site -->
+    <input type="hidden" name="site" value="The Mustard Seed Nursery" />
+
+    <!-- Honeypot -->
+    <div style="display: none;">
+      <label>Leave this field empty</label>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" />
+    </div>
+
+  </form>
+</div>

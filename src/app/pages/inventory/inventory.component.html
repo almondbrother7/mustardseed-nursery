@@ -1,0 +1,34 @@
+<mat-tab-group [(selectedIndex)]="selectedIndex" (selectedIndexChange)="onTabChange($event)">
+  <mat-tab *ngFor="let category of categories">
+    <ng-template mat-tab-label>{{ category }}</ng-template>
+
+    <!-- Category Intro Section -->
+    <div class="category-intro" *ngIf="categoryTaglines[category]">
+      <h2>{{ categoryTaglines[category].tagline }}</h2>
+      <p>{{ categoryTaglines[category].description }}</p>
+    </div>
+
+    <!-- Plant Grid -->
+    <div class="plant-grid">
+      <div 
+        class="plant-card" 
+        *ngFor="let plant of filteredPlantsByCategory(category)"
+        (click)="openLightbox(plant)"
+      >
+        <img [src]="plant.thumbnail" [alt]="plant.name" />
+        <div class="plant-info">
+          <h3>{{ plant.name }}</h3>
+          <p class="price">{{ plant.price }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="no-inventory" *ngIf="filteredPlantsByCategory(category).length === 0">
+      <p>No plants available in this category right now. Please check back soon!</p>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+
+<!-- Shared Lightbox -->
+<app-lightbox [categoryChange]="onCategoryChange.bind(this)"></app-lightbox>

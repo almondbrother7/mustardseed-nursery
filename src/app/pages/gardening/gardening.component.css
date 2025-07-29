@@ -1,0 +1,82 @@
+.gardening-container {
+  width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.7),
+      rgba(255, 255, 255, 0.7)
+    ),
+    url('/assets/images/gardening-background.png') center/cover no-repeat;
+  background-attachment: fixed;
+  padding: 2rem 1rem;
+  margin: 0;
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.gardening-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.15);
+  z-index: 0;
+}
+
+.gardening-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+.gardening-container h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.gardening-tabs ::ng-deep .mat-tab-label {
+  color: #fdf6e3; /* light cream */
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.gardening-tabs ::ng-deep .mat-tab-label.mat-tab-label-active {
+  color: #ffffff; /* brighter white for active */
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.gardening-tabs ::ng-deep .mat-ink-bar {
+  background-color: #4f772d; /* deeper green for better contrast */
+}
+
+.tab-content {
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.6);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  font-size: 1.1rem;
+  line-height: 1.65;
+}
+
+.tab-content h2 {
+  margin-bottom: 1rem;
+}
+
+.tab-content ul {
+  padding-left: 1.5rem;
+}
+
+.tab-content li {
+  margin-bottom: 0.5rem;
+}
+
+.gardening-tabs ::ng-deep .mat-tab-label {
+  color: white;
+}
+
+.gardening-tabs ::ng-deep .mat-tab-label-active {
+  color: #ffffff;
+  font-weight: bold;
+  border-bottom: 2px solid #6a8f3f; /* Accent green */
+}

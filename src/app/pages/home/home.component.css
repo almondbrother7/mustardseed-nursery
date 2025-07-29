@@ -1,0 +1,129 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
+
+/* Hero Section */
+.hero-container {
+  height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  padding: 0;
+  margin: 0;
+  margin-bottom: 2rem;
+
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.4)
+    ),
+    url("/assets/images/home-background.png") center top / cover no-repeat;
+  background-attachment: scroll;
+}
+
+/* Smaller screens (MacBook, tablets) */
+@media (max-height: 800px) {
+  .hero-container {
+    height: 50vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    height: 45vh;
+  }
+}
+
+.hero-content {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 800px;
+}
+
+.hero-content button:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease-in-out;
+}
+
+/* Mini Gallery */
+.mini-gallery {
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 900px;
+}
+
+.gallery-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.gallery-item img {
+  height: 140px;
+  border-radius: 6px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.gallery-item img:hover {
+  transform: scale(1.05);
+}
+
+.gallery-caption {
+  margin-top: 1rem;
+  font-style: italic;
+  color: #666;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-image-container img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.lightbox-caption {
+  text-align: center;
+  color: #fff;
+  margin-top: 8px;
+  font-size: 1rem;
+}

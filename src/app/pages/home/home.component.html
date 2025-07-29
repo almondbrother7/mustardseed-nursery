@@ -1,0 +1,21 @@
+<!-- Hero Section -->
+<div class="hero-container" [@fadeSlideIn]>
+  <div class="hero-content">
+    <h1>Local Nursery in Palm Bay, FL</h1>
+    <button mat-raised-button color="primary" routerLink="/inventory">
+      View the inventory
+    </button>
+  </div>
+</div>
+
+<div class="gallery-row">
+  <div 
+    class="gallery-item" 
+    *ngFor="let item of miniGallery; let i = index"
+    (click)="openLightbox(i)"
+  >
+    <img [src]="item.thumb" [alt]="item.caption" />
+  </div>
+</div>
+
+<app-lightbox></app-lightbox>

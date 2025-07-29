@@ -1,0 +1,75 @@
+<mat-sidenav-container class="nav-container">
+
+  <!-- Side Drawer for Mobile -->
+  <mat-sidenav #drawer mode="over" class="mobile-nav">
+    <button mat-button routerLink="/" (click)="drawer.close()">Home</button>
+    <button mat-button routerLink="/inventory" (click)="drawer.close()">Inventory</button>
+    <button mat-button routerLink="/gardening" (click)="drawer.close()">Gardening</button>
+    <button mat-button routerLink="/contact" (click)="drawer.close()">Contact</button>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <!-- Top Toolbar -->
+    <mat-toolbar color="primary">
+
+      <!-- MOBILE VIEW -->
+      <ng-container *ngIf="isMobile; else desktopNav">
+        <!-- Burger menu toggle -->
+        <button mat-icon-button (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <a routerLink="/" class="site-title">
+          The Mustard Seed Nursery
+        </a>
+      </ng-container>
+
+      <!-- DESKTOP VIEW -->
+      <ng-template #desktopNav>
+        <a routerLink="/" class="site-title">
+          The Mustard Seed Nursery
+        </a>
+        <span class="spacer"></span>
+        <a mat-button 
+          routerLink="/" 
+          routerLinkActive="active-link" 
+          [routerLinkActiveOptions]="{ exact: true }">
+          Home
+        </a>
+        <a mat-button 
+          routerLink="/gardening" 
+          routerLinkActive="active-link">
+          Gardening
+        </a>
+        <a mat-button 
+          routerLink="/inventory" 
+          routerLinkActive="active-link">
+          Inventory
+        </a>
+        <a mat-button 
+          routerLink="/contact" 
+          routerLinkActive="active-link">
+          Contact
+        </a>
+      </ng-template>
+
+    </mat-toolbar>
+
+    <main style="padding: 16px;">
+      <router-outlet></router-outlet>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <span>© 2025 Andrew Carey</span>
+        <span class="footer-link">
+          <a href="https://andrewcarey.dev" target="_blank" rel="noopener">
+            Developer Portfolio →
+          </a>
+        </span>
+      </div>
+    </footer>
+
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

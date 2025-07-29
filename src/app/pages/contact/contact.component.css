@@ -1,0 +1,120 @@
+.contact-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(135deg, #f7f4ef, #e6dfd8);
+}
+
+.contact-image-container {
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+}
+
+.contact-image-container img {
+  display: block;
+  max-width: 50%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+  margin: 0 auto;
+}
+
+.photo-caption {
+  display: block;
+  text-align: center;
+  font-style: italic;
+  color: #666;
+  margin-top: 4px;
+  font-size: 0.95rem;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.contact-list a {
+  color: #1976d2;
+  text-decoration: none;
+  font-size: 1.05rem;
+}
+
+.contact-list a:hover {
+  text-decoration: underline;
+}
+
+.contact-list i {
+  margin-right: 8px;
+  color: #1976d2;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.feedback {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+.feedback.success {
+  color: green;
+}
+
+.feedback.error {
+  color: red;
+}
+
+.qr-section {
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  .qr-code {
+    width: 150px;
+    height: 150px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.qr-code {
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.upcoming-events-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #f8f8f8;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.map-section iframe {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+.map-section,
+.faq-section,
+.share-section {
+  max-width: 800px;
+  margin: 2rem auto; 
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
