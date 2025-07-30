@@ -1,7 +1,6 @@
 <!-- Hero Section -->
 <div class="hero-container" [@fadeSlideIn]>
-  <div class="hero-content">
-    <h1>Local Nursery in Palm Bay, FL</h1>
+  <div class="hero-cta">
     <button mat-raised-button color="primary" routerLink="/inventory">
       View the inventory
     </button>
@@ -16,6 +15,10 @@
   >
     <img [src]="item.thumb" [alt]="item.caption" />
   </div>
+</div>
+
+<div class="gallery-caption">
+  Browse our collection — and <a routerLink="/order-online">order plants online</a> for local pickup or delivery!
 </div>
 
 <app-lightbox></app-lightbox>

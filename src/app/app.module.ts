@@ -17,6 +17,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LayoutModule } from '@angular/cdk/layout';
+import { FooterComponent } from './shared/footer/footer.component';
+
 
 @NgModule({
   declarations: [
@@ -26,6 +28,7 @@ import { LayoutModule } from '@angular/cdk/layout';
     PlantInventoryComponent,
     ContactComponent,
     LightboxComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,

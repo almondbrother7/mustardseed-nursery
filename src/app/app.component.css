@@ -1,39 +1,18 @@
-.active-link {
-  font-weight: bold;
-  color: #64ffda;
-  border-bottom: 2px solid #64ffda;
-}
 
-.site-title {
-  text-decoration: none;
-  color: white; /* or mat-color($primary-palette, default-contrast) */
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.site-title:hover {
-  color: #64ffda; /* Teal accent on hover */
-}
 
 .nav-container {
   height: 100vh; /* full height for sidenav */
 }
 
-.site-footer {
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: #666;
-  border-top: 1px solid rgba(0,0,0,0.1);
-}
+.main-sidenav {
+  width: 220px;
+  padding-top: 1rem;
+  border-right: 1px solid #ccc;
 
-.site-footer a {
-  color: #1976d2;
-  text-decoration: none;
-  margin: 0 6px;
-}
-
-.site-footer a:hover {
-  text-decoration: underline;
+  background-color: #f5f5f5; /* fallback */
+  background: linear-gradient(to bottom, #e8f5e9, #ffffff);
+  background-image: url('/assets/sidebar-top.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: top center;
 }
