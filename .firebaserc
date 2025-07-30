@@ -1,6 +1,7 @@
 {
   "projects": {
-    "default": "sighthound-playdate"
+    "default": "mustardseed-nursery",
+    "mustardseed": "mustardseed-nursery"
   },
   "targets": {},
   "etags": {}
