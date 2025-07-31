@@ -12,14 +12,21 @@
     <div class="plant-grid">
       <div 
         class="plant-card" 
-        *ngFor="let plant of filteredPlantsByCategory(category)"
+        *ngFor="let plant of filteredPlantsByCategory(category)" 
         (click)="openLightbox(plant)"
       >
         <img [src]="plant.thumbnail" [alt]="plant.name" />
         <div class="plant-info">
           <h3>{{ plant.name }}</h3>
-          <p class="price">{{ plant.price }}</p>
+          <p class="price">${{ plant.price }}</p>
         </div>
+        <button 
+          mat-stroked-button 
+          color="primary" 
+          class="request-button"
+          (click)="requestOrder(plant)">
+          Request Order
+        </button>
       </div>
     </div>
 

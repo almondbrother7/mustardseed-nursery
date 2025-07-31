@@ -64,7 +64,7 @@
   <p>Send us a quick note:</p>
 
   <!-- Material Contact Form -->
-  <form class="contact-form" (submit)="onSubmit($event)">
+  <form #contactForm class="contact-form" (submit)="onSubmit($event)">
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Your Name</mat-label>
       <input matInput name="name" placeholder="John Doe" required />
@@ -87,8 +87,10 @@
     <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
     <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
-    <!-- Hidden field to tag the site -->
     <input type="hidden" name="site" value="The Mustard Seed Nursery" />
+    <input type="hidden" name="plantName" />
+    <input type="hidden" name="plantID" />
+
 
     <!-- Honeypot -->
     <div style="display: none;">

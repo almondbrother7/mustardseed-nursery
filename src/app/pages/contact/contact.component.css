@@ -118,3 +118,13 @@
   padding-right: 1rem;
 }
 
+@keyframes flash-border {
+  0%   { box-shadow: 0 0 0px rgba(255, 193, 7, 0); }
+  50%  { box-shadow: 0 0 12px 4px rgba(255, 193, 7, 0.9); }
+  100% { box-shadow: 0 0 0px rgba(255, 193, 7, 0); }
+}
+
+.flash-highlight {
+  animation: flash-border 3s ease-in-out 1;
+  border-radius: 8px;
+}

@@ -8,8 +8,6 @@ html, body {
   background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   background-attachment: fixed;
   color: #222;
-
-  /* Remove flex on html/body */
 }
 
 app-root {
@@ -44,38 +42,6 @@ a[mat-button] {
   font-weight: bold;
   color: #64ffda;
   border-bottom: 2px solid #64ffda;
-}
-
-.site-title {
-  text-decoration: none;
-  color: white; /* or mat-color($primary-palette, default-contrast) */
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-.site-title:hover {
-  color: #64ffda; /* Teal accent on hover */
-}
-
-.site-footer {
-  text-align: center;
-  padding: 1rem;
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  color: #666;
-  border-top: 1px solid rgba(0,0,0,0.1);
-  height: 64px;
-  flex-shrink: 0;
-}
-
-.site-footer a {
-  color: #1976d2;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.site-footer a:hover {
-  text-decoration: underline;
 }
 
 .sidebar-header {
@@ -115,22 +81,6 @@ a[mat-button] {
   padding-left: 0.5rem;
 }
 
-.gardening-container a {
-  color: #1976d2;
-  text-decoration: none;
-}
-
-.gardening-container a:hover {
-  text-decoration: underline;
-}
-
-/* GLOBAL: icon + text list styling */
-.icon-text-list {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-
 .icon-text-list li {
   display: flex;
   align-items: center;
@@ -167,30 +117,6 @@ a[mat-button] {
   height: 1.4rem;
   color: #009688;
   flex-shrink: 0;
-}
-
-.linkedin-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 1rem;
-  background: #ffffff;
-  color: #0077b5;
-  font-weight: 600;
-  border-radius: 6px;
-  text-decoration: none;
-  border: 2px solid #0077b5;
-  transition: all 0.2s ease;
-}
-
-.linkedin-button:hover {
-  background: #0077b5; 
-  color: #fff;
-}
-
-.linkedin-button img.icon-svg {
-  width: 20px;
-  height: 20px;
 }
 
 .mobile-menu-button {
@@ -251,19 +177,8 @@ mat-toolbar {
     max-width: 150px;
     margin-bottom: 1rem;
   }
-  /* CERTIFICATIONS: stack badges */
-  .certifications-section ul {
-    display: flex;
-    flex-direction: column !important;
-    gap: 1rem;
-  }
-  /* PROJECT CARDS: 1 column on mobile */
   .inventory-grid {
     grid-template-columns: 1fr !important;
-  }
-  /* Resume download button full width */
-  .resume-section a[mat-raised-button] {
-    width: 100%;
   }
 }
 
@@ -286,20 +201,6 @@ a.mat-mdc-button {
     transform: translateY(0);
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
   }
-}
-
-.project-card a,
-.ç-container a:not(.linkedin-button) {
-  color: #1976d2;
-  text-decoration: none;
-  font-size: 1.05rem;
-  transition: color 0.2s ease;
-}
-
-.project-card a:hover,
-.gardening-container a:not(.linkedin-button):hover {
-  text-decoration: underline;
-  color: #125a9c;
 }
 
 .footer-content {

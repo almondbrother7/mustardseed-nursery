@@ -1,21 +1,62 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
-
 
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
   styleUrls: ['./contact.component.css']
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
+  @ViewChild('contactForm') contactFormRef!: ElementRef;
   isSubmitting = false;
   successMessage = '';
   errorMessage = '';
 
   private readonly formspreeEndpoint = environment.formspreeEndpoint;
+  plantName: string = '';
+  plantID: string = '';
+  
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-  constructor(private http: HttpClient) {}
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.plantName = decodeURIComponent(params['plantName'] || '');
+      this.plantID = params['id'] || '';
+
+      if (this.plantName) {
+        setTimeout(() => {
+          const messageBox = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
+          if (messageBox) {
+            messageBox.value = `I'm interested in ordering the following plant: ${this.plantName}`;
+          }
+
+          const nameField = document.querySelector('input[name="plantName"]') as HTMLInputElement;
+          const idField = document.querySelector('input[name="plantID"]') as HTMLInputElement;
+          if (nameField) nameField.value = this.plantName;
+          if (idField) idField.value = this.plantID;
+
+          const formElement = this.contactFormRef?.nativeElement as HTMLElement;
+          if (formElement) {
+            formElement.classList.add('flash-highlight');
+            setTimeout(() => formElement.classList.remove('flash-highlight'), 1200);
+            formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+
+          // ✅ Optional: clean query params from URL
+          this.router.navigate([], {
+            queryParams: {},
+            replaceUrl: true
+          });
+        }, 100);
+      }
+    });
+  }
 
   onSubmit(event: Event) {
     event.preventDefault();
@@ -23,7 +64,6 @@ export class ContactComponent {
     const form = event.target as HTMLFormElement;
     const formData = new FormData(form);
 
-    // ✅ Honeypot anti-bot field
     const honeypot = (form.querySelector('input[name="website"]') as HTMLInputElement)?.value;
     if (honeypot) {
       console.warn('[Playdate] Honeypot triggered - likely a bot.');
@@ -34,7 +74,6 @@ export class ContactComponent {
     this.successMessage = '';
     this.errorMessage = '';
 
-    // ✅ Send directly to Formspree
     this.http.post(this.formspreeEndpoint, formData).subscribe({
       next: () => {
         this.isSubmitting = false;

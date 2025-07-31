@@ -8,6 +8,16 @@
   flex-shrink: 0;
 }
 
+.site-footer a {
+  color: #1976d2;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
 .footer-content {
   display: flex;
   justify-content: space-between;
