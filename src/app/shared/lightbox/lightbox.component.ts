@@ -27,7 +27,7 @@ export class LightboxComponent {
     this.images = images;
     this.startIndex = startIndex;
     this.currentIndex = startIndex;
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
     this.visible = true;
   }
 
@@ -61,7 +61,7 @@ export class LightboxComponent {
   }
 
   private extractCategoryFromCaption(caption: string): string | undefined {
-    const parts = caption.split('::'); // e.g. 'Jatropha :: Butterfly Garden'
+    const parts = caption.split(':'); // e.g. 'Jatropha : Butterfly Garden'
     return parts.length === 2 ? parts[1].trim() : undefined;
   }
 

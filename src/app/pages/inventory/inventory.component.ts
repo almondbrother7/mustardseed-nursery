@@ -2,6 +2,8 @@ import { Component, ViewChild } from '@angular/core';
 import { LightboxComponent } from 'src/app/shared/lightbox/lightbox.component';
 import { Plant } from '../../shared/models/plant-interface';
 import { Router } from '@angular/router';
+import { InventoryService } from '../../services/inventory.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-inventory',
@@ -10,22 +12,40 @@ import { Router } from '@angular/router';
 })
 export class PlantInventoryComponent {
   @ViewChild(LightboxComponent) lightbox!: LightboxComponent;
-
-  constructor(private router: Router) {}
-
-  selectedCategory = 'Butterfly Garden';
   selectedIndex = 0;
+  selectedCategory!: string;
+  plants!: Plant[];
 
-  get filteredPlants(): Plant[] {
-    return this.plants.filter(p => p.category === this.selectedCategory);
+  constructor(private router: Router,
+    private inventoryService: InventoryService,
+  ) {}
+
+  get plantsFilteredByCategory(): Plant[] {
+    return this.filterPlantsByCategory(this.selectedCategory);
   }
 
-  filteredPlantsByCategory(category: string): Plant[] {
-    return this.filteredPlants.filter(p => p.category === category);
+  ngOnInit(): void {
+    this.selectedCategory = this.categories[this.selectedIndex];
+    this.inventoryService.getAllPlants().subscribe((data) => {
+    if (data?.length) {
+      this.plants = data;
+    } else if (!environment.production) {
+      console.warn('Using static fallback inventory (dev mode)');
+      this.plants = this.staticPlants;
+    } else {
+      console.error('No inventory available in production!');
+      this.plants = [];
+    }
+    });
+  }
+
+  filterPlantsByCategory(category?: string | null): Plant[] {
+    if (category) this.selectedCategory = category;
+    return this.plants.filter(p => p.category?.includes(this.selectedCategory));
   }
 
   openLightbox(plant: Plant) {
-    const categoryImages = this.filteredPlants
+    const categoryImages = this.plantsFilteredByCategory
       .filter(p => !!p.fullImage)
       .map(p => ({
         src: p.fullImage!,
@@ -91,7 +111,7 @@ export class PlantInventoryComponent {
     }
   };
 
-  plants: Plant[] = [
+  staticPlants: Plant[] = [
     {
       plantID: 1,
       name: 'Jatropha',
@@ -214,7 +234,5 @@ export class PlantInventoryComponent {
       infoUrl: 'https://example.com/hawaiian-beauty'
     }
   ];
-
-
 
 }

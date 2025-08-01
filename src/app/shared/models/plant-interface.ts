@@ -1,8 +1,11 @@
 export interface Plant {
+  plantID: number;
   name: string;
+  price: number;
   category: string;
-  thumbnail: string;
-  fullImage: string;
+  inventory: number;
   description?: string;
-  price?: string;
+  infoUrl: string;
+  thumbnail: string;
+  fullImage?: string;
 }

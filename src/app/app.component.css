@@ -4,15 +4,3 @@
   height: 100vh; /* full height for sidenav */
 }
 
-.main-sidenav {
-  width: 220px;
-  padding-top: 1rem;
-  border-right: 1px solid #ccc;
-
-  background-color: #f5f5f5; /* fallback */
-  background: linear-gradient(to bottom, #e8f5e9, #ffffff);
-  background-image: url('/assets/sidebar-top.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: top center;
-}

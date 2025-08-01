@@ -40,6 +40,7 @@ testem.log
 .firebase/
 /private
 /src/assets/images/inventory/resized
+/private
 
 # System files
 .DS_Store
