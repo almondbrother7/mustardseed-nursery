@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
+  useStaticData: false,
   formspreeEndpoint: 'https://formspree.io/f/xvgrdobw',
   firebase: {
     apiKey: "AIzaSyADk4kdzT51QZei69Pwc60fliyYFzES62o",

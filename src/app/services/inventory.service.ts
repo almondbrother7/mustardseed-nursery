@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Plant } from '../shared/models/plant-interface';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
+
 @Injectable({ providedIn: 'root' })
 export class InventoryService {
   constructor(

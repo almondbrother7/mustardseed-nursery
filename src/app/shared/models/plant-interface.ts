@@ -1,8 +1,9 @@
 export interface Plant {
   plantID: number;
   name: string;
+  slug: string;
   price: number;
-  category: string;
+  categories: string[];
   inventory: number;
   description?: string;
   infoUrl: string;

@@ -10,25 +10,27 @@
 
     <!-- Plant Grid -->
     <div class="plant-grid">
-      <div 
-        class="plant-card" 
-        *ngFor="let plant of plantsFilteredByCategory" 
-        (click)="openLightbox(plant)"
-      >
-        <img [src]="plant.thumbnail" [alt]="plant.name" />
-        <div class="plant-info">
-          <h3>{{ plant.name }}</h3>
-          <p class="price">${{ plant.price }}</p>
-        </div>
-        <button 
-          mat-stroked-button 
-          color="primary" 
-          class="request-button"
-          (click)="requestOrder(plant)">
-          Request Order
+      <ng-container *ngIf="plants?.length! > 0">
+        <div 
+          class="plant-card" 
+          *ngFor="let plant of plantsFilteredByCategory"
+          (click)="openLightbox(plant)"
+        >
+          <img [src]="plant.thumbnail" [alt]="plant.name" />
+          <div class="plant-info">
+            <h3>{{ plant.name }}</h3>
+            <p class="price">${{ plant.price }}</p>
+          </div>
+          <button 
+            mat-stroked-button 
+            color="primary" 
+            class="request-button"
+            (click)="requestOrder(plant)">
+            Request Order
         </button>
-      </div>
-    </div>
+        </div>
+    </ng-container>
+  </div>
 
     <!-- Empty State -->
     <div class="no-inventory" *ngIf="plantsFilteredByCategory.length === 0">
