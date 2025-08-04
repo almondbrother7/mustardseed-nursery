@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Plant } from '../shared/models/plant-interface';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Plant } from '../shared/models/plant-interface';
+import { Category } from '../shared/models/category-interface';
 
 
 @Injectable({ providedIn: 'root' })
@@ -14,5 +15,11 @@ export class InventoryService {
     return this.firestore
       .collection('plants')
       .valueChanges() as Observable<Plant[]>;
+  }
+
+  getAllCategories(): Observable<Category[]> {
+    return this.firestore
+      .collection('categories', ref => ref.orderBy('sortOrder'))
+      .valueChanges({ idField: 'slug' }) as Observable<Category[]>;
   }
 }

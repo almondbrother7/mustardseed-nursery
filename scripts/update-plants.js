@@ -6,6 +6,15 @@ const admin = require("firebase-admin");
 const serviceAccount = require("../private/service-account.json");
 const plants = require("../private/load-plants.json");
 
+// const categoryLabelToSlug = {
+//   "Butterfly Garden": "butterfly-garden",
+//   "Native Plants": "native-plants",
+//   "Flowering Plants": "flowering-plants",
+//   "Survival Garden": "survival-garden",
+//   "Miscellaneous": "miscellaneous",
+// };
+
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
@@ -45,6 +54,9 @@ async function importPlants(dryRun = true) {
     if (!isValidPlant(plant)) continue;
 
     const slug = slugify(plant.name);
+    // plant.categories = (plant.categories || [])
+    //   .map(label => categoryLabelToSlug[label])
+    //   .filter(Boolean);
 
     if (slugSet.has(slug)) {
       console.warn(`⚠️ Skipping duplicate slug: ${slug}`);

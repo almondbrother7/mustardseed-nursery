@@ -1,10 +1,12 @@
+import { combineLatest } from 'rxjs';
 import { Component, ViewChild } from '@angular/core';
 import { LightboxComponent } from 'src/app/shared/lightbox/lightbox.component';
-import { Plant } from '../../shared/models/plant-interface';
 import { Router } from '@angular/router';
 import { InventoryService } from '../../services/inventory.service';
 import { environment } from 'src/environments/environment';
-import { staticPlants } from '../../data/static-plants';
+import { staticCategories, staticPlants } from '../../data/static-data';
+import { Plant } from '../../shared/models/plant-interface';
+import { Category } from '../../shared/models/category-interface';
 
 @Component({
   selector: 'app-inventory',
@@ -13,35 +15,49 @@ import { staticPlants } from '../../data/static-plants';
 })
 export class PlantInventoryComponent {
   @ViewChild(LightboxComponent) lightbox!: LightboxComponent;
+  plants: Plant[] = [];
+  categories: Category[] = [];
   selectedIndex = 0;
   selectedCategory!: string;
-  plants: Plant[] = [];
+  filteredByCategoryMap: { [slug: string]: Plant[] } = {};
 
   constructor(private router: Router,
     private inventoryService: InventoryService,
   ) {}
 
-  get plantsFilteredByCategory(): Plant[] {
-    return this.filterPlantsByCategory(this.selectedCategory);
-  }
-
   ngOnInit(): void {
-    this.selectedCategory = this.categories[this.selectedIndex];
     if (environment.useStaticData) {
       console.log("🧪 Using staticPlants (dev mode)");
+      this.categories = staticCategories;
       this.plants = staticPlants;
+      this.buildCategoryMap();
     } else {
-      this.inventoryService.getAllPlants().subscribe((data) => {
-        if (data?.length) {
-          this.plants = data;
-        }
-      });
+        combineLatest([
+          this.inventoryService.getAllCategories(),
+          this.inventoryService.getAllPlants()
+        ]).subscribe(([categories, plants]) => {
+          this.categories = categories ?? [];
+          this.plants = plants ?? [];
+          this.buildCategoryMap();
+        });
     }
   }
 
-  filterPlantsByCategory(category?: string | null): Plant[] {
-    if (category) this.selectedCategory = category;
-    return this.plants.filter(plant => plant.categories?.includes(this.selectedCategory));
+  buildCategoryMap(): void {
+    this.filteredByCategoryMap = this.categories.reduce((acc, category) => {
+      acc[category.slug] = this.plants.filter(plant =>
+        plant.categories?.includes(category.slug)
+      );
+      return acc;
+    }, {} as { [slug: string]: Plant[] });
+
+    if (!this.selectedCategory && this.categories.length) {
+      this.selectedCategory = this.categories[0].slug;
+    }
+  }
+
+  get plantsFilteredByCategory(): Plant[] {
+    return this.filteredByCategoryMap[this.selectedCategory] || [];
   }
 
   openLightbox(plant: Plant) {
@@ -59,14 +75,15 @@ export class PlantInventoryComponent {
   }
     
   onTabChange(index: number) {
-    this.selectedCategory = this.categories[index];
+    this.selectedIndex = index;
+    this.selectedCategory = this.categories[index]?.slug;
   }
 
-  onCategoryChange(newCategory: string): void {
-    const index = this.categories.indexOf(newCategory);
-    if (index !== -1) {
+  onCategoryChange(newCategorySlug: string): void {
+    const index = this.categories.findIndex(c => c.slug === newCategorySlug);
+    if (index > -1) {
       this.selectedIndex = index;
-      this.selectedCategory = this.categories[index];
+      this.selectedCategory = newCategorySlug;
     }
   }
 
@@ -75,40 +92,5 @@ export class PlantInventoryComponent {
     const encoded = encodeURIComponent(name);
     this.router.navigate(['/contact'], { queryParams: { plantName: encoded, id: plantID } });
   }
-
-  categories = [
-    'Butterfly Garden',
-    'Native Plants',
-    'Flowering Plants',
-    'Survival Garden',
-    'Miscellaneous'
-  ];
-
-  categoryTaglines: Record<string, { tagline: string; description: string }> = {
-    'Butterfly Garden': {
-      tagline: 'Bring the pollinators!',
-      description: 'These vibrant flowers attract butterflies and hummingbirds while beautifying your space.'
-    },
-    'Survival Garden': {
-      tagline: 'Grow to thrive.',
-      description: 'Nutritious and resilient plants perfect for self-sufficiency and sustainability.'
-    },
-    'Native Plants': {
-      tagline: 'Florida tough, pollinator friendly.',
-      description: 'Low-maintenance natives that thrive in your region and support local ecosystems.'
-    },
-    'Vegetables': {
-      tagline: 'Fresh from the garden.',
-      description: 'Grow your own delicious veggies and herbs for a healthy harvest.'
-    },
-    'Flowering Plants': {
-      tagline: 'Blooms that wow.',
-      description: 'Gorgeous blooms for color, fragrance, and visual impact.'
-    },
-    'Miscellaneous': {
-      tagline: 'Unique & interesting.',
-      description: 'A mix of plants that do not fit elsewhere but deserve a place in your garden.'
-    }
-  };
 
 }
