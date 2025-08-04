@@ -8,7 +8,7 @@
       <img [src]="currentImage.src" [alt]="currentImage.caption || ''">
     </div>
 
-    <div class="lightbox-caption">{{ currentImage.caption }}</div>
+    <div class="lightbox-caption" [innerHTML]="currentImage.caption"></div>
 
     <button class="lightbox-arrow right" (click)="next()">&#10095;</button>
 

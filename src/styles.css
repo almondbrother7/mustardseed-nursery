@@ -236,3 +236,17 @@ a.mat-mdc-button {
     flex-direction: column;
   }
 }
+
+/* Target any <a> inside a lightbox caption, rendered via innerHTML */
+.lightbox-caption a,
+.lightbox-caption a:visited,
+.lightbox-caption a:active {
+  color: white !important;
+  text-decoration: underline;
+}
+
+.lightbox-caption a:hover {
+  color: white !important;
+  text-decoration: underline dashed;
+  opacity: 0.9;
+}

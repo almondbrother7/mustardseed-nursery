@@ -70,9 +70,10 @@ export class PlantInventoryComponent {
       .map(p => ({
         src: p.fullImage!,
         thumb: p.thumbnail,
-        caption: `${p.name} : ${p.description ?? 'Visit the Gardening page for details'}`
+        plantID: p.plantID,
+        caption: `<a href='${p.infoUrl}' target='_blank' rel='noopener noreferrer'>${p.name}</a> : ${p.description ?? 'Visit the Gardening page for details'}`
       }));
-    const index = categoryImages.findIndex(img => img.caption.startsWith(plant.name));
+    const index = categoryImages.findIndex(img => img.plantID === plant.plantID);
     if (index >= 0) {
       this.lightbox.open(categoryImages, index);
     }
