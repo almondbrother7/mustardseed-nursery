@@ -7,6 +7,7 @@ import { environment } from 'src/environments/environment';
 import { staticCategories, staticPlants } from '../../data/static-data';
 import { Plant } from '../../shared/models/plant-interface';
 import { Category } from '../../shared/models/category-interface';
+import { sortPlants } from '../../utils/plant-utils'
 
 @Component({
   selector: 'app-inventory',
@@ -20,6 +21,8 @@ export class PlantInventoryComponent {
   selectedIndex = 0;
   selectedCategory!: string;
   filteredByCategoryMap: { [slug: string]: Plant[] } = {};
+  sortOrder: 'name' | 'price' = 'name';
+
 
   constructor(private router: Router,
     private inventoryService: InventoryService,
@@ -29,7 +32,8 @@ export class PlantInventoryComponent {
     if (environment.useStaticData) {
       console.log("🧪 Using staticPlants (dev mode)");
       this.categories = staticCategories;
-      this.plants = staticPlants;
+      this.plants = sortPlants(staticPlants, this.sortOrder)
+        .filter(plant => plant.inventory >= 1)
       this.buildCategoryMap();
     } else {
         combineLatest([
@@ -37,7 +41,7 @@ export class PlantInventoryComponent {
           this.inventoryService.getAllPlants()
         ]).subscribe(([categories, plants]) => {
           this.categories = categories ?? [];
-          this.plants = plants ?? [];
+          this.plants = sortPlants((plants ?? []), this.sortOrder);
           this.buildCategoryMap();
         });
     }

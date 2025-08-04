@@ -13,7 +13,10 @@ export class InventoryService {
 
   getAllPlants(): Observable<Plant[]> {
     return this.firestore
-      .collection('plants')
+      .collection('plants', ref =>
+        ref.where('inventory', '>=', 1)
+        // .orderBy('name') -- barfs unless sort on inventory first, since where having equality!
+      )
       .valueChanges() as Observable<Plant[]>;
   }
 

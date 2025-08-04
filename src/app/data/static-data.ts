@@ -85,7 +85,7 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/cassava.jpg",
     "description": "Staple root crop, edible leaves.",
     "price": 7,
-    "inventory": 9,
+    "inventory": 0,
     "infoUrl": "https://example.com/cassava"
   },
   {
@@ -99,7 +99,7 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/curcuma.jpg",
     "description": "Exotic cone-like tropical blooms.",
     "price": 10,
-    "inventory": 4,
+    "inventory": 0,
     "infoUrl": "https://example.com/curcuma"
   },
   {
@@ -113,7 +113,7 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/knockout-rose.jpg",
     "description": "Continuous blooming, disease-resistant rose.",
     "price": 15,
-    "inventory": 3,
+    "inventory": 0,
     "infoUrl": "https://example.com/knockout-rose"
   },
   {
@@ -127,7 +127,7 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/hawaiian-beauty.jpg",
     "description": "AKA red morning glory - prolific vine full of flowers",
     "price": 15,
-    "inventory": 6,
+    "inventory": 0,
     "infoUrl": "https://example.com/hawaiian-beauty"
   },
   {
@@ -155,7 +155,7 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/rangoon-creeper.jpg",
     "description": "Beautiful vine covered in white, pink & deep red flowers.",
     "price": 15,
-    "inventory": 5,
+    "inventory": 0,
     "infoUrl": "https://example.com/rangoon-creeper"
   },
   {
@@ -183,7 +183,8 @@ export const staticPlants: Plant[] = [
     "fullImage": "assets/images/inventory/vinca.jpg",
     "description": "Hardy groundcover with lavender blooms.",
     "price": 4,
-    "inventory": 10,
+    "inventory": 0,
     "infoUrl": "https://example.com/vinca"
   }
 ]
+.filter(p => p.inventory >= 1) // matching the filter on api call to firestore.
