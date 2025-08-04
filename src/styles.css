@@ -38,10 +38,13 @@ a[mat-button] {
   text-decoration: none;
 }
 
-.active-link {
-  font-weight: bold;
-  color: #64ffda;
-  border-bottom: 2px solid #64ffda;
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  padding: 1rem;
 }
 
 .sidebar-header {
@@ -63,16 +66,19 @@ a[mat-button] {
 }
 
 .nav-links {
-  padding-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
 }
 
 .nav-links a {
-  display: block;
-  margin: 0.5rem 1rem;
-  text-align: left;
+  display: flex;
+  align-items: center;
+  height: 3rem;
   font-weight: bold;
   color: #33691e;
   text-decoration: none;
+  border-radius: 0.5rem;
 }
 
 .nav-links a.active-link {
