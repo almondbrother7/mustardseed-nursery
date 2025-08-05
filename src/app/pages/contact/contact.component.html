@@ -56,7 +56,7 @@
   </section>
 
   <h2>{{ formDescription }}</h2>
-  <i *ngIf="orderMessage">Enter your name and email address and click Send Message.</i>
+  <i *ngIf="showOrderMessage">Enter your name and email address and click Send Message.  Sending this request will reserve your plants for 72 hours. If you like, include instructions to take delivery.</i>
 
   <form #contactForm="ngForm" class="contact-form" (ngSubmit)="onSubmit(contactForm)" novalidate>
     <!-- Name -->

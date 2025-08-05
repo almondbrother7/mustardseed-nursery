@@ -31,7 +31,7 @@ export class ContactComponent implements OnInit {
   };
   errorMessage = '';
   formDescription: string = 'Send us a quick note:';
-  orderMessage: boolean = false;
+  showOrderMessage: boolean = false;
 
   
   constructor(
@@ -49,7 +49,7 @@ export class ContactComponent implements OnInit {
 
       if (message) {
         this.formDescription = 'Please complete the form below to reserve your plants';
-        this.orderMessage = true;
+        this.showOrderMessage = true;
         this.formData.message = message;
         this.highlightAndScrollForm();
         this.clearQueryParams();
@@ -60,7 +60,7 @@ export class ContactComponent implements OnInit {
       // Inventory
       if (this.plantName) {
         this.formDescription = 'Please complete the form below to reserve your plants';
-        this.orderMessage = true;
+        this.showOrderMessage = true;
         this.formData.message = `I'm interested in ordering the following plant: ${this.plantName}`;
         this.formData.plantName = this.plantName;
         this.formData.plantID = this.plantID;

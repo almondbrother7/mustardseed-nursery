@@ -68,8 +68,7 @@ export class ReserveComponent {
       return acc + (item.quantity * item.price);
     }, 0);
 
-    const fullMessage = `Sending this request will reserve your plants for ${this.holdHours} hours.
- If you like, include instructions to take delivery:
+    const fullMessage = `Reservation Summary:
 
 ${orderSummary}
 Total: $${total}
