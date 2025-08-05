@@ -55,42 +55,83 @@
     </a>
   </section>
 
-  <p>Send us a quick note:</p>
+  <h2>{{ formDescription }}</h2>
+  <i *ngIf="orderMessage">Enter your name and email address and click Send Message.</i>
 
-  <!-- Material Contact Form -->
-  <form #contactForm class="contact-form" (submit)="onSubmit($event)">
+  <form #contactForm="ngForm" class="contact-form" (ngSubmit)="onSubmit(contactForm)" novalidate>
+    <!-- Name -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Your Name</mat-label>
-      <input matInput name="name" placeholder="John Doe" required />
+      <input
+        matInput
+        name="name"
+        placeholder="John Doe"
+        required
+        ngModel
+        #nameField="ngModel"
+      />
+      <mat-error *ngIf="nameField.invalid && nameField.touched">Name is required.</mat-error>
     </mat-form-field>
 
+    <!-- Email -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Your Email</mat-label>
-      <input matInput type="email" name="email" placeholder="you@example.com" required />
+      <input
+        matInput
+        type="email"
+        name="email"
+        placeholder="you@example.com"
+        required
+        email
+        ngModel
+        #emailField="ngModel"
+      />
+      <mat-error *ngIf="emailField.invalid && emailField.touched">
+        <span *ngIf="emailField.errors?.['required']">Email is required.</span>
+        <span *ngIf="emailField.errors?.['email']">Invalid email format.</span>
+      </mat-error>
     </mat-form-field>
 
+    <!-- Message -->
     <mat-form-field appearance="fill" class="full-width">
       <mat-label>Your Message</mat-label>
-      <textarea matInput name="message" rows="5" placeholder="Type your message..." required></textarea>
+      <textarea
+        matInput
+        name="message"
+        rows="7"
+        placeholder="Type your message..."
+        required
+        [(ngModel)]="formData.message"
+        #messageField="ngModel"
+        #messageBox
+      ></textarea>
+      <mat-error *ngIf="messageField.invalid && messageField.touched">Message is required.</mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="isSubmitting">
+    <!-- Submit Button -->
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="contactForm.invalid || isSubmitting"
+    >
       {{ isSubmitting ? 'Sending...' : 'Send Message' }}
     </button>
 
+    <!-- Feedback Messages -->
     <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
     <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
 
-    <input type="hidden" name="site" value="The Mustard Seed Nursery" />
-    <input type="hidden" name="plantName" />
-    <input type="hidden" name="plantID" />
+    <!-- Hidden Fields -->
+    <input type="hidden" name="site" value="The Mustard Seed Nursery" ngModel />
+    <input type="hidden" name="plantName" [(ngModel)]="formData.plantName" />
+    <input type="hidden" name="plantID" [(ngModel)]="formData.plantID" />
 
 
     <!-- Honeypot -->
     <div style="display: none;">
       <label>Leave this field empty</label>
-      <input type="text" name="website" tabindex="-1" autocomplete="off" />
+      <input type="text" name="website" tabindex="-1" autocomplete="off" ngModel />
     </div>
-
   </form>
 </div>

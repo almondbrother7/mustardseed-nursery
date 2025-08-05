@@ -52,6 +52,12 @@
     </ul>
     <hr />
     <p><strong>Total:</strong> ${{ orderTotal }}</p>
-    <button (click)="submitOrder()">Continue</button>
+    <button
+      mat-stroked-button
+      color="primary"
+      class="request-button"
+      (click)="submitOrder()">
+      Continue
+    </button>
   </aside>
 </div>

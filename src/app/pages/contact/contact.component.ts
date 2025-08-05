@@ -1,7 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { environment } from '../../../environments/environment';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-contact',
@@ -10,18 +12,33 @@ import { environment } from '../../../environments/environment';
 })
 export class ContactComponent implements OnInit {
   @ViewChild('contactForm') contactFormRef!: ElementRef;
-  isSubmitting = false;
-  successMessage = '';
-  errorMessage = '';
+  @ViewChild('messageBox') messageBoxRef!: ElementRef<HTMLTextAreaElement>;
+
 
   private readonly formspreeEndpoint = environment.formspreeEndpoint;
   plantName: string = '';
   plantID: string = '';
+  isSubmitting = false;
+  successMessage = '';
+  formData = {
+    name: '',
+    email: '',
+    message: '',
+    site: 'The Mustard Seed Nursery',
+    plantName: '',
+    plantID: '',
+    website: ''
+  };
+  errorMessage = '';
+  formDescription: string = 'Send us a quick note:';
+  orderMessage: boolean = false;
+
   
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private ngZone: NgZone
   ) {}
 
   ngOnInit(): void {
@@ -30,52 +47,63 @@ export class ContactComponent implements OnInit {
       this.plantName = decodeURIComponent(params['plantName'] || '');
       this.plantID = params['id'] || '';
 
-      // Order form
       if (message) {
-        setTimeout(() => {
-          const messageBox = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
-          if (messageBox) {
-            messageBox.value = message;
-          }
+        this.formDescription = 'Please complete the form below to reserve your plants';
+        this.orderMessage = true;
+        this.formData.message = message;
+        this.highlightAndScrollForm();
+        this.clearQueryParams();
 
-          this.highlightAndScrollForm();
-          this.clearQueryParams();
-        }, 100);
-
-        return; // don't also run plantName logic
+        return;
       }
 
       // Inventory
       if (this.plantName) {
-        setTimeout(() => {
-          const messageBox = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
-          if (messageBox) {
-            messageBox.value = `I'm interested in ordering the following plant: ${this.plantName}`;
-          }
+        this.formDescription = 'Please complete the form below to reserve your plants';
+        this.orderMessage = true;
+        this.formData.message = `I'm interested in ordering the following plant: ${this.plantName}`;
+        this.formData.plantName = this.plantName;
+        this.formData.plantID = this.plantID;
 
-          const nameField = document.querySelector('input[name="plantName"]') as HTMLInputElement;
-          const idField = document.querySelector('input[name="plantID"]') as HTMLInputElement;
-          if (nameField) nameField.value = this.plantName;
-          if (idField) idField.value = this.plantID;
-
-          this.highlightAndScrollForm();
-          this.clearQueryParams();
-        }, 100);
+        this.highlightAndScrollForm();
+        this.clearQueryParams();
       }
     });
   }
 
-  onSubmit(event: Event) {
-    event.preventDefault();
 
-    const form = event.target as HTMLFormElement;
-    const formData = new FormData(form);
 
-    const honeypot = (form.querySelector('input[name="website"]') as HTMLInputElement)?.value;
-    if (honeypot) {
-      console.warn('[Playdate] Honeypot triggered - likely a bot.');
+  onSubmit(contactForm: NgForm) {
+    if (contactForm.invalid) {
+      contactForm.control.markAllAsTouched();
+      this.errorMessage = '❌ Please fix the errors above.';
       return;
     }
+
+    const formEl = contactForm.form.getRawValue() as {
+      name: string;
+      email: string;
+      message: string;
+      site?: string;
+      plantName?: string;
+      plantID?: string;
+      website?: string;
+    };
+
+    // Honeypot check
+    const honeypot = formEl.website;
+    if (honeypot) {
+      console.warn('[Nursery] Honeypot triggered - likely a bot.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('name', formEl.name.trim());
+    formData.append('email', formEl.email.trim());
+    formData.append('message', formEl.message.trim());
+    if (formEl.site) formData.append('site', formEl.site);
+    if (formEl.plantName) formData.append('plantName', formEl.plantName);
+    if (formEl.plantID) formData.append('plantID', formEl.plantID);
 
     this.isSubmitting = true;
     this.successMessage = '';
@@ -85,6 +113,7 @@ export class ContactComponent implements OnInit {
       next: () => {
         this.isSubmitting = false;
         this.successMessage = '✅ Your message has been sent successfully!';
+        contactForm.resetForm(); // Reset form and validation state
       },
       error: () => {
         this.isSubmitting = false;
@@ -93,20 +122,31 @@ export class ContactComponent implements OnInit {
     });
   }
 
-  private highlightAndScrollForm() {
-    const formElement = this.contactFormRef?.nativeElement as HTMLElement;
-    if (formElement) {
-      formElement.classList.add('flash-highlight');
-      setTimeout(() => formElement.classList.remove('flash-highlight'), 1200);
-      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  private waitForMessageBoxAndScroll(attemptsLeft = 10): void {
+    if (this.messageBoxRef?.nativeElement) {
+      this.messageBoxRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      this.messageBoxRef.nativeElement.focus();
+    } else if (attemptsLeft > 0) {
+      setTimeout(() => this.waitForMessageBoxAndScroll(attemptsLeft - 1), 50);
+    } else {
+      console.warn('❗ messageBoxRef not found after multiple attempts');
     }
   }
 
-  private clearQueryParams() {
-    this.router.navigate([], {
-      queryParams: {},
-      replaceUrl: true
+  private highlightAndScrollForm() {
+    this.ngZone.onStable.pipe(take(1)).subscribe(() => {
+      if (this.messageBoxRef?.nativeElement) {
+        this.messageBoxRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        this.messageBoxRef.nativeElement.focus();
+      }
     });
   }
+
+  private clearQueryParams() {
+      this.router.navigate([], {
+        queryParams: {},
+        replaceUrl: true
+      });
+    }
 
 }

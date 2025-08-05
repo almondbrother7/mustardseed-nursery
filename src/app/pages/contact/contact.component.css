@@ -117,6 +117,10 @@
   padding-left: 1rem;
   padding-right: 1rem;
 }
+.share-section {
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #cfd8dc; /* light gray divider */
+}
 
 @keyframes flash-border {
   0%   { box-shadow: 0 0 0px rgba(255, 193, 7, 0); }
