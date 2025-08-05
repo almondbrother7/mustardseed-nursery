@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Plant } from '../shared/models/plant-interface';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,7 @@ export class ReservationService {
   private readonly STORAGE_KEY = 'nursery-reserved-plants';
   private reservedPlants: { [plantID: string]: { plant: Plant; quantity: number } } = {};
   private lastAddedPlantID: number | null = null;
+  private reservedCount$ = new BehaviorSubject<number>(0);
 
   constructor() {
     this.loadFromLocalStorage();
@@ -47,6 +49,7 @@ export class ReservationService {
     this.lastAddedPlantID = plant.plantID;
 
     this.saveToLocalStorage();
+    this.updateCount();
   }
 
 
@@ -54,12 +57,14 @@ export class ReservationService {
     if (this.reservedPlants[plantID]) {
       this.reservedPlants[plantID].quantity = newQuantity;
       this.saveToLocalStorage();
+      this.updateCount();
     }
   }
 
   remove(plantID: number): void {
     delete this.reservedPlants[plantID];
     this.saveToLocalStorage();
+    this.updateCount();
   }
 
   getItems(): { plant: Plant; quantity: number }[] {
@@ -69,6 +74,7 @@ export class ReservationService {
   clear(): void {
     this.reservedPlants = {};
     localStorage.removeItem(this.STORAGE_KEY);
+    this.updateCount();
   }
 
   getLastAddedPlantID(): number | null {
@@ -78,4 +84,22 @@ export class ReservationService {
   clearLastAddedPlantID() {
     this.lastAddedPlantID = null;
   }
+
+  private updateCount() {
+    const count = Object.values(this.reservedPlants).reduce((sum, item) => sum + item.quantity, 0);
+    this.reservedCount$.next(count);
+  }
+
+  updateReservedCountFromStorage() {
+    const raw = localStorage.getItem(this.STORAGE_KEY);
+    const obj = raw ? JSON.parse(raw) : {};
+    const items = Object.values(obj);
+    const count = items.reduce((sum: number, item: any) => sum + (item.quantity ?? 0), 0);
+    this.reservedCount$.next(count);
+  }
+
+  getReservedCount(): Observable<number> {
+    return this.reservedCount$.asObservable();
+  }
+
 }

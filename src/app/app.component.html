@@ -33,9 +33,22 @@
         </button>
       </ng-container>
 
-      <a routerLink="/" class="site-title">
-        The Mustard Seed Nursery
-      </a>
+      <a routerLink="/" class="site-title">The Mustard Seed Nursery</a>
+
+      <span class="spacer"></span>
+
+      <button
+        mat-icon-button
+        class="cart-button"
+        *ngIf="reservedCount > 0"
+        [routerLink]="'/reserve'"
+        aria-label="View reservation"
+      >
+        <mat-icon>shopping_cart</mat-icon>
+        <span class="cart-badge">{{ reservedCount }}</span>
+      </button>
+
+
     </mat-toolbar>
 
     <main class="main-content">
