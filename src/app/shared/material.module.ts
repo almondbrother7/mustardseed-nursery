@@ -9,7 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-
+import { MatSelectModule } from '@angular/material/select';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   exports: [
@@ -23,6 +24,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatInputModule  ,
     MatTabsModule,
     MatSnackBarModule,
+    MatSelectModule,
+    BrowserAnimationsModule,
   ]
 })
 export class MaterialModule {}

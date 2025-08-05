@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
+import { getCategoryLabel, CATEGORY_LABELS } from 'src/app/utils/category-utils';
 
 @Component({
   selector: 'app-reserve',
@@ -11,6 +12,10 @@ import { ReservationService } from 'src/app/services/reservation.service';
 })
 export class ReserveComponent {
   plants: Plant[] = [];
+  filteredPlants: Plant[] = [];
+  categories: string[] = [];
+  selectedCategories: string[] = [];
+
   holdHours: number = 72;
   customer = {
     name: '',
@@ -20,6 +25,7 @@ export class ReserveComponent {
   reservedItems: { plant: Plant; quantity: number }[] = [];
   orderQuantities: { [plantID: number]: number } = {};
   highlightedPlantID: number | null = null;
+  categoryLabelMap = CATEGORY_LABELS;
 
   constructor(
     private plantService: InventoryService,
@@ -30,6 +36,8 @@ export class ReserveComponent {
   ngOnInit() {
     this.plantService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
+      this.categories = [...new Set(this.plants.flatMap(p => p.categories))];
+      this.updateFilteredPlants();
     });
 
     this.reservedItems = this.reservationService.getItems();
@@ -44,6 +52,16 @@ export class ReserveComponent {
         this.highlightedPlantID = null;
         this.reservationService.clearLastAddedPlantID();
       }, 2500);
+    }
+  }
+
+  updateFilteredPlants(): void {
+    if (!this.selectedCategories.length) {
+      this.filteredPlants = this.plants;
+    } else {
+      this.filteredPlants = this.plants.filter(plant =>
+        plant.categories.some(cat => this.selectedCategories.includes(cat))
+      );
     }
   }
 
@@ -70,9 +88,7 @@ export class ReserveComponent {
       `${item.quantity} x ${item.name} ($${item.quantity * item.price})`
     ).join('\n');
 
-    const fullMessage = `Reservation Summary
-${orderSummary}
-`;
+    const fullMessage = `Reservation Summary\n${orderSummary}\n`;
 
     this.router.navigate(['/contact'], {
       queryParams: { message: fullMessage }
@@ -112,5 +128,4 @@ ${orderSummary}
       setTimeout(() => el.classList.remove('highlight'), 1000);
     }
   }
-
 }

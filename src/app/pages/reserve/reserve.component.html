@@ -9,7 +9,17 @@
 <div class="reserve-page-container">
   <!-- Plant List -->
   <div class="plant-catalog">
-    <div class="plant-card" *ngFor="let plant of plants" [id]="'plant-' + plant.plantID">
+    <mat-form-field appearance="fill" class="category-filter">
+      <mat-label>Filter by Categories</mat-label>
+      <mat-select [(ngModel)]="selectedCategories" multiple (selectionChange)="updateFilteredPlants()">
+        <mat-option *ngFor="let category of categories" [value]="category">
+          {{ categoryLabelMap[category] || category }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Filtered Plant List -->
+    <div class="plant-card" *ngFor="let plant of filteredPlants" [id]="'plant-' + plant.plantID">
       <img [src]="'/' + plant.thumbnail" [alt]="plant.name" />
 
       <h3>
