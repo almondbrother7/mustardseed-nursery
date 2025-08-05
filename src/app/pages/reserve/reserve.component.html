@@ -1,12 +1,12 @@
 <div class="reserve-header">
   <h1>Reserve some plants</h1>
   <p>
-    Use this form to select quantity of plants and it will send us an email, reserving your plants, using the contact form.
+    Use this form to reserve plants and it will open a summary panel to the right where you can increase the quantity.
+    Clicking on Continue will go to the Contact form where you can send your reservation to us.
   </p>
 </div>
 
 <div class="reserve-page-container">
-  <!-- Plant List -->
   <div class="plant-catalog">
     <div class="plant-card" *ngFor="let plant of plants">     
       <img [src]="'/' + plant.thumbnail" [alt]="plant.name" />
@@ -19,45 +19,78 @@
 
       <p>{{ plant.description }}</p>
 
-      <!-- Grouped price and available -->
       <p class="price-available">
         <strong>Price:</strong> ${{ plant.price }} &nbsp;|&nbsp;
         <strong>Available:</strong> {{ plant.inventory }}
       </p>
 
-      <!-- Quantity selector -->
-      <div class="quantity-input">
-        <label>
-          Quantity:
-          <input
-            type="number"
-            min="0"
-            [max]="plant.inventory"
-            [disabled]="plant.inventory === 0"
-            [(ngModel)]="orderQuantities[plant.plantID]"
-            name="qty-{{ plant.plantID }}"
-          />
-        </label>
-      </div>
+      <button
+        mat-stroked-button
+        color="primary"
+        (click)="reservePlant(plant)"
+        [disabled]="plant.inventory === 0"
+      >
+        Reserve
+      </button>
+
     </div>
   </div>
 
   <!-- Reservation summary sidebar -->
-  <aside class="reservation-summary" *ngIf="selectedItems.length > 0">
-    <h3>Your Order</h3>
-    <ul>
-      <li *ngFor="let item of selectedItems">
-        {{ item.quantity }} × {{ item.name }} = ${{ item.quantity * item.price }}
-      </li>
-    </ul>
+  <aside class="reservation-summary" *ngIf="reservedItems.length > 0">
+    <div class="summary-header">
+    <h3>Your Reservation</h3>
+      <button
+        mat-icon-button
+        color="warn"
+        (click)="clear()"
+        aria-label="Clear reservation"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+  </div>
+    <div *ngFor="let item of reservedItems" 
+      class="summary-item"
+      [class.highlight]="item.plant.plantID === highlightedPlantID"
+    >
+      <div class="summary-name">{{ item.plant.name }}</div>
+
+      <div class="summary-controls">
+        <label>
+          Qty:
+          <input
+            type="number"
+            min="1"
+            [max]="item.plant.inventory"
+            [(ngModel)]="item.quantity"
+            (change)="updateQuantity(item.plant.plantID, item.quantity)"
+          />
+        </label>
+
+        <button mat-icon-button (click)="removeItem(item.plant.plantID)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+
+      <div class="summary-price">
+        {{ item.quantity * item.plant.price | currency }}
+      </div>
+    </div>
+
     <hr />
-    <p><strong>Total:</strong> ${{ orderTotal }}</p>
+
+    <div class="subtotal">
+      <strong>Total:</strong> {{ getSubtotal() | currency }}
+    </div>
+
     <button
-      mat-stroked-button
+      mat-raised-button
       color="primary"
-      class="request-button"
-      (click)="submitOrder()">
+      class="continue-button"
+      (click)="reserveOrder()"
+    >
       Continue
     </button>
+
   </aside>
 </div>

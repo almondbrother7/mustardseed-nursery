@@ -56,7 +56,7 @@
   </section>
 
   <h2>{{ formDescription }}</h2>
-  <i *ngIf="showOrderMessage">Enter your name and email address and click Send Message.  Sending this request will reserve your plants for 72 hours. If you like, include instructions to take delivery.</i>
+  <i *ngIf="isReserving">Enter your name and email address and click Send Message.  Sending this request will reserve your plants for 72 hours. If you like, include instructions to take delivery.</i>
 
   <form #contactForm="ngForm" class="contact-form" (ngSubmit)="onSubmit(contactForm)" novalidate>
     <!-- Name -->
@@ -94,12 +94,11 @@
 
     <!-- Message -->
     <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Your Message</mat-label>
       <textarea
         matInput
         name="message"
         rows="7"
-        placeholder="Type your message..."
+        [placeholder]="!formData.message ? 'Type your message...' : ''"
         required
         [(ngModel)]="formData.message"
         #messageField="ngModel"

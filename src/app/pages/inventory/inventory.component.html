@@ -28,7 +28,7 @@
               mat-stroked-button 
               color="primary" 
               class="request-button"
-              (click)="requestOrder(plant)">
+              (click)="reservePlant(plant); $event.stopPropagation();">
               Reserve
           </button>
           </div>

@@ -8,6 +8,8 @@ import { staticCategories, staticPlants } from '../../data/static-data';
 import { Plant } from '../../shared/models/plant-interface';
 import { Category } from '../../shared/models/category-interface';
 import { sortPlants } from '../../utils/plant-utils'
+import { ReservationService } from 'src/app/services/reservation.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-inventory',
@@ -26,6 +28,8 @@ export class PlantInventoryComponent {
 
   constructor(private router: Router,
     private inventoryService: InventoryService,
+    private reservationService: ReservationService,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -92,10 +96,10 @@ export class PlantInventoryComponent {
     }
   }
 
-  requestOrder(plant: Plant): void {
-    const { plantID, name } = plant;
-    const encoded = encodeURIComponent(name);
-    this.router.navigate(['/contact'], { queryParams: { plantName: encoded, id: plantID } });
+  reservePlant(plant: Plant): void {
+    this.reservationService.add(plant, 1);
+    this.snackBar.open(`${plant.name} added to your reservation.`, 'View', { duration: 3000 })
+      .onAction().subscribe(() => this.router.navigate(['/reserve']));
   }
 
 }

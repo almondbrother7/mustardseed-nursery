@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { environment } from '../../../environments/environment';
 import { take } from 'rxjs';
+import { ReservationService } from 'src/app/services/reservation.service';
 
 @Component({
   selector: 'app-contact',
@@ -13,7 +14,6 @@ import { take } from 'rxjs';
 export class ContactComponent implements OnInit {
   @ViewChild('contactForm') contactFormRef!: ElementRef;
   @ViewChild('messageBox') messageBoxRef!: ElementRef<HTMLTextAreaElement>;
-
 
   private readonly formspreeEndpoint = environment.formspreeEndpoint;
   plantName: string = '';
@@ -31,14 +31,14 @@ export class ContactComponent implements OnInit {
   };
   errorMessage = '';
   formDescription: string = 'Send us a quick note:';
-  showOrderMessage: boolean = false;
-
+  isReserving: boolean = false;
   
   constructor(
     private http: HttpClient,
     private route: ActivatedRoute,
     private router: Router,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private reservationService: ReservationService,
   ) {}
 
   ngOnInit(): void {
@@ -49,8 +49,8 @@ export class ContactComponent implements OnInit {
 
       if (message) {
         this.formDescription = 'Please complete the form below to reserve your plants';
-        this.showOrderMessage = true;
-        this.formData.message = message;
+        this.isReserving = true;
+        if (!this.formData.message) this.formData.message = message;
         this.highlightAndScrollForm();
         this.clearQueryParams();
 
@@ -60,8 +60,8 @@ export class ContactComponent implements OnInit {
       // Inventory
       if (this.plantName) {
         this.formDescription = 'Please complete the form below to reserve your plants';
-        this.showOrderMessage = true;
-        this.formData.message = `I'm interested in ordering the following plant: ${this.plantName}`;
+        this.isReserving = true;
+        if (!this.formData.message) this.formData.message = `I'm interested in ordering the following plant: ${this.plantName}`;
         this.formData.plantName = this.plantName;
         this.formData.plantID = this.plantID;
 
@@ -114,23 +114,15 @@ export class ContactComponent implements OnInit {
         this.isSubmitting = false;
         this.successMessage = '✅ Your message has been sent successfully!';
         contactForm.resetForm(); // Reset form and validation state
+        if (this.isReserving) {
+          this.reservationService.clear();
+        }
       },
       error: () => {
         this.isSubmitting = false;
         this.errorMessage = '❌ Something went wrong. Please try again later.';
       }
     });
-  }
-
-  private waitForMessageBoxAndScroll(attemptsLeft = 10): void {
-    if (this.messageBoxRef?.nativeElement) {
-      this.messageBoxRef.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      this.messageBoxRef.nativeElement.focus();
-    } else if (attemptsLeft > 0) {
-      setTimeout(() => this.waitForMessageBoxAndScroll(attemptsLeft - 1), 50);
-    } else {
-      console.warn('❗ messageBoxRef not found after multiple attempts');
-    }
   }
 
   private highlightAndScrollForm() {

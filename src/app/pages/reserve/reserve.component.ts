@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
+import { ReservationService } from 'src/app/services/reservation.service';
 
 @Component({
   selector: 'app-reserve',
@@ -10,50 +11,54 @@ import { InventoryService } from '../../services/inventory.service';
 })
 export class ReserveComponent {
   plants: Plant[] = [];
-  orderQuantities: { [plantID: number]: number } = {};
   holdHours: number = 72;
-
-
   customer = {
     name: '',
     email: '',
     message: ''
   };
+  reservedItems: { plant: Plant; quantity: number }[] = [];
+  orderQuantities: { [plantID: number]: number } = {};
+  highlightedPlantID: number | null = null;
 
   constructor(
     private plantService: InventoryService,
-    private router: Router
+    private router: Router,
+    private reservationService: ReservationService,
   ) {}
 
   ngOnInit() {
     this.plantService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
     });
-  }
 
-  get selectedItems() {
-    return this.plants
-      .filter(p => this.orderQuantities[p.plantID] > 0)
-      .map(p => ({
-        plantID: p.plantID,
-        name: p.name,
-        quantity: this.orderQuantities[p.plantID],
-        price: p.price
-      }));
+    this.reservedItems = this.reservationService.getItems();
+    this.highlightedPlantID = this.reservationService.getLastAddedPlantID();
+
+    for (const item of this.reservedItems) {
+      this.orderQuantities[item.plant.plantID] = item.quantity;
+    }
+
+    if (this.highlightedPlantID !== null) {
+      setTimeout(() => {
+        this.highlightedPlantID = null;
+        this.reservationService.clearLastAddedPlantID();
+      }, 2500);
+    }
   }
 
   get orderTotal() {
-    return this.selectedItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    return this.getSubtotal();
   }
 
-  submitOrder(): void {
-    const orderedItems = this.plants
-      .filter(p => this.orderQuantities[p.plantID] > 0)
+  reserveOrder(): void {
+    const orderedItems = this.reservedItems
+      .filter(p => p.quantity > 0)
       .map(p => ({
-        name: p.name,
-        id: p.plantID,
-        quantity: this.orderQuantities[p.plantID],
-        price: p.price
+        name: p.plant.name,
+        id: p.plant.plantID,
+        quantity: p.quantity,
+        price: p.plant.price
       }));
 
     if (orderedItems.length === 0) {
@@ -64,18 +69,41 @@ export class ReserveComponent {
     const orderSummary = orderedItems.map(item =>
       `${item.quantity} x ${item.name} ($${item.quantity * item.price})`
     ).join('\n');
-    const total = orderedItems.reduce((acc, item) => {
-      return acc + (item.quantity * item.price);
-    }, 0);
 
-    const fullMessage = `Reservation Summary:
-
+    const fullMessage = `Reservation Summary
 ${orderSummary}
-Total: $${total}
 `;
 
     this.router.navigate(['/contact'], {
       queryParams: { message: fullMessage }
     });
   }
+
+  updateQuantity(plantID: number, qty: number) {
+    this.reservationService.updateQuantity(plantID, qty);
+  }
+
+  removeItem(plantID: number) {
+    this.reservationService.remove(plantID);
+    this.reservedItems = this.reservationService.getItems();
+  }
+
+  getSubtotal() {
+    return this.reservedItems.reduce((acc, item) => {
+      return acc + (item.quantity * item.plant.price);
+    }, 0);
+  }
+
+  reservePlant(plant: Plant): void {
+    this.reservationService.add(plant, 1);
+    this.reservedItems = this.reservationService.getItems();
+  }
+
+  clear(): void {
+    this.reservationService.clear();
+    this.reservedItems = [];
+  }
+
+
 }
+
