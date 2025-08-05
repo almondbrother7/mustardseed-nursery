@@ -1,0 +1,70 @@
+.quantity-section {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+
+.quantity-section input {
+  width: 60px;
+  margin-left: 0.5rem;
+}
+
+.plant-card {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.plant-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+
+
+.price-available {
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.quantity-input {
+  margin-top: 0.5rem;
+}
+
+.quantity-input input {
+  width: 60px;
+  padding: 4px;
+  margin-left: 0.5rem;
+  font-size: 1rem;
+}
+
+.order-page-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+/* Left side: plant catalog */
+.plant-catalog {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Right side: order summary */
+.order-summary {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  border-radius: 8px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  position: sticky;
+  top: 80px;
+}

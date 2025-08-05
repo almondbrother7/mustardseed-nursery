@@ -26,9 +26,26 @@ export class ContactComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
+      const message = params['message'];
       this.plantName = decodeURIComponent(params['plantName'] || '');
       this.plantID = params['id'] || '';
 
+      // Order form
+      if (message) {
+        setTimeout(() => {
+          const messageBox = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
+          if (messageBox) {
+            messageBox.value = message;
+          }
+
+          this.highlightAndScrollForm();
+          this.clearQueryParams();
+        }, 100);
+
+        return; // don't also run plantName logic
+      }
+
+      // Inventory
       if (this.plantName) {
         setTimeout(() => {
           const messageBox = document.querySelector('textarea[name="message"]') as HTMLTextAreaElement;
@@ -41,18 +58,8 @@ export class ContactComponent implements OnInit {
           if (nameField) nameField.value = this.plantName;
           if (idField) idField.value = this.plantID;
 
-          const formElement = this.contactFormRef?.nativeElement as HTMLElement;
-          if (formElement) {
-            formElement.classList.add('flash-highlight');
-            setTimeout(() => formElement.classList.remove('flash-highlight'), 1200);
-            formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-
-          // ✅ Optional: clean query params from URL
-          this.router.navigate([], {
-            queryParams: {},
-            replaceUrl: true
-          });
+          this.highlightAndScrollForm();
+          this.clearQueryParams();
         }, 100);
       }
     });
@@ -85,4 +92,21 @@ export class ContactComponent implements OnInit {
       }
     });
   }
+
+  private highlightAndScrollForm() {
+    const formElement = this.contactFormRef?.nativeElement as HTMLElement;
+    if (formElement) {
+      formElement.classList.add('flash-highlight');
+      setTimeout(() => formElement.classList.remove('flash-highlight'), 1200);
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  private clearQueryParams() {
+    this.router.navigate([], {
+      queryParams: {},
+      replaceUrl: true
+    });
+  }
+
 }
