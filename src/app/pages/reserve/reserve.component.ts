@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Plant } from '../shared/models/plant-interface';
-import { InventoryService } from '../services/inventory.service';
+import { Plant } from '../../shared/models/plant-interface';
+import { InventoryService } from '../../services/inventory.service';
 
 @Component({
-  selector: 'app-order-online',
-  templateUrl: './order-online.component.html',
-  styleUrls: ['./order-online.component.css']
+  selector: 'app-reserve',
+  templateUrl: './reserve.component.html',
+  styleUrls: ['./reserve.component.css']
 })
-export class OrderOnlineComponent {
+export class ReserveComponent {
   plants: Plant[] = [];
   orderQuantities: { [plantID: number]: number } = {};
+  holdHours: number = 72;
 
 
   customer = {
@@ -56,7 +57,7 @@ export class OrderOnlineComponent {
       }));
 
     if (orderedItems.length === 0) {
-      alert('Please select at least one plant to order.');
+      alert('Please select at least one plant to reserve.');
       return;
     }
 
@@ -67,7 +68,9 @@ export class OrderOnlineComponent {
       return acc + (item.quantity * item.price);
     }, 0);
 
-    const fullMessage = `Order Details:
+    const fullMessage = `Sending this request will reserve your plants for ${this.holdHours} hours:
+Please enter your name and email address above, and be sure to include instructions to take delivery.
+
 ${orderSummary}
 Total: $${total}
 `;

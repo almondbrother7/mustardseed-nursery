@@ -42,7 +42,7 @@
   font-size: 1rem;
 }
 
-.order-page-container {
+.reserve-page-container {
   display: flex;
   flex-direction: row;
   gap: 2rem;
@@ -56,8 +56,8 @@
   gap: 1.5rem;
 }
 
-/* Right side: order summary */
-.order-summary {
+/* Right side: reservation summary */
+.reservation-summary {
   flex: 1;
   background: #fff;
   border: 1px solid #ccc;
@@ -67,4 +67,8 @@
   overflow-y: auto;
   position: sticky;
   top: 80px;
+}
+
+.reserve-header {
+  margin-bottom: 1.5rem;
 }

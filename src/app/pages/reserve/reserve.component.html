@@ -1,4 +1,11 @@
-<div class="order-page-container">
+<div class="reserve-header">
+  <h1>Reserve some plants</h1>
+  <p>
+    Use this form to select quantity of plants and it will send us an email, reserving your plants, using the contact form.
+  </p>
+</div>
+
+<div class="reserve-page-container">
   <!-- Plant List -->
   <div class="plant-catalog">
     <div class="plant-card" *ngFor="let plant of plants">     
@@ -35,8 +42,8 @@
     </div>
   </div>
 
-  <!-- Order summary sidebar -->
-  <aside class="order-summary" *ngIf="selectedItems.length > 0">
+  <!-- Reservation summary sidebar -->
+  <aside class="reservation-summary" *ngIf="selectedItems.length > 0">
     <h3>Your Order</h3>
     <ul>
       <li *ngFor="let item of selectedItems">
@@ -45,6 +52,6 @@
     </ul>
     <hr />
     <p><strong>Total:</strong> ${{ orderTotal }}</p>
-    <button (click)="submitOrder()">Submit Order</button>
+    <button (click)="submitOrder()">Continue</button>
   </aside>
 </div>

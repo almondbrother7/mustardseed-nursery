@@ -15,7 +15,7 @@
     <div class="nav-links">
       <a mat-button routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }" (click)="isMobile && drawer.close()">Home</a>
       <a mat-button routerLink="/inventory" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Inventory</a>
-      <a mat-button routerLink="/order-online" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Order Online</a>
+      <a mat-button routerLink="/reserve" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Reserve</a>
       <a mat-button routerLink="/gardening" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Gardening</a>
       <a mat-button routerLink="/contact" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Contact</a>
     </div>
@@ -43,6 +43,6 @@
     </main>
 
     <app-footer></app-footer>
-    
+
   </mat-sidenav-content>
 </mat-sidenav-container>

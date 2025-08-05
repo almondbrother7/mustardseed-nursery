@@ -19,7 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { LayoutModule } from '@angular/cdk/layout';
 import { FooterComponent } from './shared/footer/footer.component';
-import { OrderOnlineComponent } from './order-online/order-online.component';
+import { ReserveComponent } from './pages/reserve/reserve.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { environment } from '../environments/environment';
@@ -33,7 +33,7 @@ import { environment } from '../environments/environment';
     ContactComponent,
     LightboxComponent,
     FooterComponent,
-    OrderOnlineComponent,
+    ReserveComponent,
   ],
   imports: [
     BrowserModule,
