@@ -7,8 +7,9 @@
 </div>
 
 <div class="reserve-page-container">
+  <!-- Plant List -->
   <div class="plant-catalog">
-    <div class="plant-card" *ngFor="let plant of plants">     
+    <div class="plant-card" *ngFor="let plant of plants" [id]="'plant-' + plant.plantID">
       <img [src]="'/' + plant.thumbnail" [alt]="plant.name" />
 
       <h3>
@@ -53,7 +54,11 @@
       class="summary-item"
       [class.highlight]="item.plant.plantID === highlightedPlantID"
     >
-      <div class="summary-name">{{ item.plant.name }}</div>
+      <div 
+        class="summary-name"
+        (click)="scrollToPlant(item.plant.plantID)"
+        >{{ item.plant.name }}
+      </div>
 
       <div class="summary-controls">
         <label>

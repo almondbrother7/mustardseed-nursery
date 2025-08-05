@@ -92,6 +92,8 @@
 .summary-name {
   font-weight: 600;
   margin-bottom: 0.25rem;
+  cursor: default;
+  text-decoration: none;
 }
 
 .summary-controls {
@@ -151,4 +153,9 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.highlight {
+  outline: 2px solid #4caf50;
+  transition: outline 0.3s ease-in-out;
 }

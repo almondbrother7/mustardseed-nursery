@@ -104,6 +104,13 @@ ${orderSummary}
     this.reservedItems = [];
   }
 
+  scrollToPlant(plantID: number) {
+    const el = document.getElementById(`plant-${plantID}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('highlight');
+      setTimeout(() => el.classList.remove('highlight'), 1000);
+    }
+  }
 
 }
-
