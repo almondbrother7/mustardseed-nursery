@@ -18,6 +18,7 @@
       <a mat-button routerLink="/reserve" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Shop</a>
       <a mat-button routerLink="/gardening" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Gardening</a>
       <a mat-button routerLink="/contact" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Contact</a>
+      <a *ngIf="isAdmin" mat-button routerLink="/admin" routerLinkActive="active-link" (click)="isMobile && drawer.close()">Admin</a>
     </div>
 
   </mat-sidenav>

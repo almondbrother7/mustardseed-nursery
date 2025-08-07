@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { UserService } from './services/user-service';
 import { ReservationService } from './services/reservation.service';
 
 @Component({
@@ -16,7 +16,7 @@ export class AppComponent {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private reservationService: ReservationService,
-    private router: Router,
+    private userService: UserService,
   ) {}
 
   ngOnInit() {
@@ -30,6 +30,10 @@ export class AppComponent {
     this.reservationService.getReservedCount().subscribe(count => {
       this.reservedCount = count;
     });
+  }
+
+  get isAdmin (): any {
+    return this.userService.getAdminStatus();
   }
 
 }

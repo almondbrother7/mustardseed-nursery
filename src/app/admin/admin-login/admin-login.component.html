@@ -1,0 +1,25 @@
+<h2>Admin Login</h2>
+
+<form #loginForm="ngForm" (ngSubmit)="login(loginForm)" novalidate>
+  <div>
+    <label>Email:</label>
+    <input type="email" name="email" ngModel required email>
+    <div class="error" *ngIf="loginForm.submitted && loginForm.controls['email']?.invalid">
+      A valid email is required.
+    </div>
+  </div>
+
+  <div>
+    <label>Password:</label>
+    <input type="password" name="password" ngModel required minlength="6">
+    <div class="error" *ngIf="loginForm.submitted && loginForm.controls['password']?.invalid">
+      Password is required (min 6 chars).
+    </div>
+  </div>
+
+  <div *ngIf="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <button type="submit">Login</button>
+</form>

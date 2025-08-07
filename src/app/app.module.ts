@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common'; 
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,7 +23,9 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { ReserveComponent } from './pages/reserve/reserve.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { environment } from '../environments/environment';
+import { Environment } from '../environments/environment';
+import { PlantCrudComponent } from './admin/plant-crud/plant-crud.component';
+import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +37,8 @@ import { environment } from '../environments/environment';
     LightboxComponent,
     FooterComponent,
     ReserveComponent,
+    PlantCrudComponent,
+    AdminLoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +51,7 @@ import { environment } from '../environments/environment';
     MatButtonModule,
     MatIconModule,
     LayoutModule,
-    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireModule.initializeApp(Environment.firebase),
     AngularFirestoreModule,
     FormsModule,
   ],

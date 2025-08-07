@@ -1,4 +1,4 @@
-export const environment = {
+export const Environment = {
   production: false,
   useStaticData: false,
   formspreeEndpoint: 'https://formspree.io/f/xvgrdobw',
