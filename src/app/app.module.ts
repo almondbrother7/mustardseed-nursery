@@ -25,8 +25,10 @@ import { ReserveComponent } from './pages/reserve/reserve.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { Environment } from '../environments/environment';
-import { PlantCrudComponent } from './admin/plant-crud/plant-crud.component';
 import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
+import { PlantCrudComponent } from './admin/plant-crud/plant-crud.component';
+import { CategoryCrudComponent } from './admin/category-crud/category-crud.component';
 
 @NgModule({
   declarations: [
@@ -38,8 +40,10 @@ import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
     LightboxComponent,
     FooterComponent,
     ReserveComponent,
-    PlantCrudComponent,
     AdminLoginComponent,
+    AdminPanelComponent,
+    PlantCrudComponent,
+    CategoryCrudComponent,
   ],
   imports: [
     SharedModule,

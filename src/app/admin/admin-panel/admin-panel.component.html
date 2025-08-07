@@ -1,0 +1,26 @@
+<!-- admin-panel.component.html -->
+<div class="admin-container">
+  <!-- Sidebar -->
+  <nav class="admin-sidebar">
+    <mat-nav-list>
+      <a mat-list-item
+         routerLink="/admin/plants"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }">
+        🌿 Plants
+      </a>
+
+      <a mat-list-item
+         routerLink="/admin/categories"
+         routerLinkActive="active"
+         [routerLinkActiveOptions]="{ exact: true }">
+        🏷️ Categories
+      </a>
+    </mat-nav-list>
+  </nav>
+
+  <!-- Main content -->
+  <main class="admin-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

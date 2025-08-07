@@ -1,0 +1,27 @@
+.admin-container {
+  display: flex;
+  height: 100vh;
+}
+
+.admin-sidebar {
+  width: 220px;
+  background: #f7f7f7;
+  border-right: 1px solid #ccc;
+  padding: 1rem 0;
+}
+
+.admin-sidebar .mat-list-item {
+  cursor: pointer;
+  padding: 1rem;
+}
+
+.admin-sidebar .mat-list-item.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+.admin-content {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}

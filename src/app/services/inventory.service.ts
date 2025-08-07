@@ -25,21 +25,12 @@ export class InventoryService {
       .valueChanges({ idField: 'slug' }) as Observable<Category[]>;
   }
 
-  createPlant(plant: Plant): Promise<void> {
-    const id = this.firestore.createId();
-    return this.firestore
-      .collection('plants')
-      .doc(id)
-      .set({ ...plant, plantID: Number(id) });
-  }
-
-  createPlantWithCounter(plant: Omit<Plant, 'plantID'>): Promise<void> {
+  createPlant(plant: Omit<Plant, 'plantID'>): Promise<void> {
     const counterRef = this.firestore.collection('counters').doc('plantID');
     const plantsRef = this.firestore.collection('plants');
 
     return this.firestore.firestore.runTransaction(async transaction => {
       const counterSnap = await transaction.get(counterRef.ref);
-      // console.log(Object.getPrototypeOf(counterSnap));
 
       if (!counterSnap.exists) {
         throw new Error('plantID counter does not exist.');
@@ -47,22 +38,20 @@ export class InventoryService {
 
       const data = counterSnap.data() as { current: number };
       const current = data.current ?? 0;
-      const newID = current + 1;
+      const newPlantID = current + 1;
 
-      const newDocRef = plantsRef.doc(); // Generate a Firestore doc with random ID
+      const newDocRef = plantsRef.doc(newPlantID.toString());
 
       transaction.set(newDocRef.ref, {
         ...plant,
-        plantID: newID
+        plantID: newPlantID,
       });
 
-      transaction.update(counterRef.ref, { current: newID });
+      transaction.update(counterRef.ref, { current: newPlantID });
 
       return;
     });
   }
-
-
 
   updatePlant(id: string, updates: Partial<Plant>): Promise<void> {
     return this.firestore.collection('plants').doc(id).update(updates);

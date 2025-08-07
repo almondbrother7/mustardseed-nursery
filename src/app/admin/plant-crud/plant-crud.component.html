@@ -1,1 +1,23 @@
-<button (click)="createTestPlant()">createTestPlant</button>
+<h2>Plant Inventory Management</h2>
+
+<app-category-select
+  [selectedCategories]="selectedCategories"
+  [categories]="categories"
+  [categoryLabelMap]="categoryLabelMap"
+  (selectionChange)="onCategorySelectionChange($event)">
+</app-category-select>
+
+<ul>
+  <li *ngFor="let plant of filteredPlants">
+    {{ plant.name }} (${{ plant.price }})
+    <button (click)="editPlant(plant)">✏️</button>
+    <button (click)="deletePlant(plant)">🗑️</button>
+  </li>
+</ul>
+
+<div *ngIf="isEditing && selectedPlant">
+  <h3>Edit Plant</h3>
+  <input [(ngModel)]="selectedPlant.name" placeholder="Name" />
+  <input [(ngModel)]="selectedPlant.price" type="number" placeholder="Price" />
+  <button (click)="savePlant()">💾 Save</button>
+</div>
