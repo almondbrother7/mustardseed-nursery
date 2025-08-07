@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
-import { getCategoryLabel, CATEGORY_LABELS } from 'src/app/utils/category-utils';
+import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 
 @Component({
   selector: 'app-reserve',
@@ -28,13 +28,13 @@ export class ReserveComponent {
   categoryLabelMap = CATEGORY_LABELS;
 
   constructor(
-    private plantService: InventoryService,
+    private inventoryService: InventoryService,
     private router: Router,
     private reservationService: ReservationService,
   ) {}
 
   ngOnInit() {
-    this.plantService.getAllPlants().subscribe(data => {
+    this.inventoryService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
       this.categories = [...new Set(this.plants.flatMap(p => p.categories))];
       this.updateFilteredPlants();
@@ -128,4 +128,10 @@ export class ReserveComponent {
       setTimeout(() => el.classList.remove('highlight'), 1000);
     }
   }
+
+  onSelectionChange(newSelected: string[]) {
+    this.selectedCategories = newSelected;
+    this.updateFilteredPlants();
+  }
+
 }
