@@ -2,7 +2,7 @@ import { Component, ElementRef, OnInit, ViewChild, NgZone } from '@angular/core'
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
-import { Environment } from '../../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { take } from 'rxjs';
 import { ReservationService } from 'src/app/services/reservation.service';
 
@@ -15,7 +15,7 @@ export class ContactComponent implements OnInit {
   @ViewChild('contactForm') contactFormRef!: ElementRef;
   @ViewChild('messageBox') messageBoxRef!: ElementRef<HTMLTextAreaElement>;
 
-  private readonly formspreeEndpoint = Environment.formspreeEndpoint;
+  private readonly formspreeEndpoint = environment.formspreeEndpoint;
   plantName: string = '';
   plantID: string = '';
   isSubmitting = false;

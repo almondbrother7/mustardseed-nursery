@@ -3,7 +3,7 @@ import { Component, ViewChild } from '@angular/core';
 import { LightboxComponent } from 'src/app/shared/lightbox/lightbox.component';
 import { Router } from '@angular/router';
 import { InventoryService } from '../../services/inventory.service';
-import { Environment } from 'src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { staticCategories, staticPlants } from '../../data/static-data';
 import { Plant } from '../../shared/models/plant-interface';
 import { Category } from '../../shared/models/category-interface';
@@ -33,7 +33,7 @@ export class PlantInventoryComponent {
   ) {}
 
   ngOnInit(): void {
-    if (Environment.useStaticData) {
+    if (environment.useStaticData) {
       console.log("🧪 Using staticPlants (dev mode)");
       this.categories = staticCategories;
       this.plants = sortPlants(staticPlants, this.sortOrder)

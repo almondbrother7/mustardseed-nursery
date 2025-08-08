@@ -24,7 +24,7 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { ReserveComponent } from './pages/reserve/reserve.component';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { Environment } from '../environments/environment';
+import { environment } from '../environments/environment';
 import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { PlantCrudComponent } from './admin/plant-crud/plant-crud.component';
@@ -59,7 +59,7 @@ import { PlantEditDialogComponent } from './admin/plant-edit-dialog/plant-edit-d
     MatButtonModule,
     MatIconModule,
     LayoutModule,
-    AngularFireModule.initializeApp(Environment.firebase),
+    AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     FormsModule,
   ],
