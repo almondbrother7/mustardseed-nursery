@@ -4,6 +4,7 @@ import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
+import { sortPlants } from '../../utils/plant-utils'
 
 @Component({
   selector: 'app-reserve',
@@ -26,6 +27,7 @@ export class ReserveComponent {
   orderQuantities: { [plantID: number]: number } = {};
   highlightedPlantID: number | null = null;
   categoryLabelMap = CATEGORY_LABELS;
+  sortOrder: 'name' | 'price' = 'name';
 
   constructor(
     private inventoryService: InventoryService,
@@ -36,6 +38,7 @@ export class ReserveComponent {
   ngOnInit() {
     this.inventoryService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
+      this.plants = sortPlants(this.plants, this.sortOrder)
       this.categories = [...new Set(this.plants.flatMap(p => p.categories))];
       this.updateFilteredPlants();
     });

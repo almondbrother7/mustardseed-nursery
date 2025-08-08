@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>{{ mode }}</h2>
+
+<mat-dialog-content class="plant-dialog-content">
+
+  <!-- Name (full width) -->
+  <mat-form-field appearance="fill" class="col-12">
+    <mat-label>Name</mat-label>
+    <input matInput [(ngModel)]="plant.name" />
+  </mat-form-field>
+
+  <!-- Price (half width) -->
+  <mat-form-field appearance="fill" class="col-6">
+    <mat-label>Price</mat-label>
+    <input matInput type="number" [(ngModel)]="plant.price" />
+  </mat-form-field>
+
+  <!-- Inventory (wider) + Category (narrower) side-by-side -->
+  <mat-form-field appearance="fill" class="col-8">
+    <mat-label>Inventory</mat-label>
+    <input matInput type="number" [(ngModel)]="plant.inventory" />
+  </mat-form-field>
+
+  <div class="col-4 category-cell">
+    <app-category-select
+      [selectedCategories]="plant.categories"
+      [categories]="allCategories"
+      [categoryLabelMap]="categoryLabelMap"
+      (selectionChange)="onCategoriesChange($event)">
+    </app-category-select>
+  </div>
+
+  <!-- Description (full width) -->
+  <mat-form-field appearance="fill" class="col-12">
+    <mat-label>Description</mat-label>
+    <textarea matInput rows="3" [(ngModel)]="plant.description"></textarea>
+  </mat-form-field>
+
+  <!-- Remaining fields (all full width) -->
+  <mat-form-field appearance="fill" class="col-12">
+    <mat-label>Info URL</mat-label>
+    <input matInput [(ngModel)]="plant.infoUrl" [readonly]="true" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="col-12">
+    <mat-label>Thumbnail Path</mat-label>
+    <input matInput [(ngModel)]="plant.thumbnail" [readonly]="true"/>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="col-12">
+    <mat-label>Full Image Path</mat-label>
+    <input matInput [(ngModel)]="plant.fullImage" [readonly]="true"/>
+  </mat-form-field>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

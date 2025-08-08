@@ -29,6 +29,7 @@ import { AdminLoginComponent } from './admin/admin-login/admin-login.component';
 import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 import { PlantCrudComponent } from './admin/plant-crud/plant-crud.component';
 import { CategoryCrudComponent } from './admin/category-crud/category-crud.component';
+import { PlantEditDialogComponent } from './admin/plant-edit-dialog/plant-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { CategoryCrudComponent } from './admin/category-crud/category-crud.compo
     AdminPanelComponent,
     PlantCrudComponent,
     CategoryCrudComponent,
+    PlantEditDialogComponent,
   ],
   imports: [
     SharedModule,

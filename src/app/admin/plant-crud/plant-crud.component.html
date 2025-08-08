@@ -7,17 +7,35 @@
   (selectionChange)="onCategorySelectionChange($event)">
 </app-category-select>
 
-<ul>
-  <li *ngFor="let plant of filteredPlants">
-    {{ plant.name }} (${{ plant.price }})
-    <button (click)="editPlant(plant)">✏️</button>
-    <button (click)="deletePlant(plant)">🗑️</button>
+<button
+  mat-fab
+  color="primary"
+  class="add-button"
+  (click)="openAddDialog()"
+  aria-label="Add Plant">
+  <mat-icon>add</mat-icon>
+</button>
+
+<ul class="plant-list">
+  <li *ngFor="let plant of filteredPlants" class="plant-row">
+    <div class="plant-main">
+      <div class="plant-title">
+        <span class="plant-name">{{ plant.name }}</span>
+        <span class="plant-price">${{ plant.price | number:'1.2-2' }}</span>
+      </div>
+      <div class="plant-meta">
+        <span class="inventory" [class.low]="plant.inventory < 1">
+          Inv: {{ plant.inventory }}
+        </span>
+        <span *ngIf="needsImage(plant)" class="chip-warn">🖼️ image needed</span>
+      </div>
+    </div>
+    <span class="spacer"></span>
+    <button mat-icon-button aria-label="Edit" (click)="editPlant(plant)">
+      <mat-icon>edit</mat-icon>
+    </button>
+    <button mat-icon-button aria-label="Delete" (click)="deletePlant(plant)">
+      <mat-icon>delete</mat-icon>
+    </button>
   </li>
 </ul>
-
-<div *ngIf="isEditing && selectedPlant">
-  <h3>Edit Plant</h3>
-  <input [(ngModel)]="selectedPlant.name" placeholder="Name" />
-  <input [(ngModel)]="selectedPlant.price" type="number" placeholder="Price" />
-  <button (click)="savePlant()">💾 Save</button>
-</div>

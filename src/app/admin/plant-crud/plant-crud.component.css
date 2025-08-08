@@ -1,0 +1,28 @@
+.add-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
+.plant-list { margin-top: 1rem; padding: 0; list-style: none; }
+.plant-row {
+  display: flex; align-items: center; gap: 12px;
+  border-radius: 12px; padding: 12px 10px; margin-bottom: 8px;
+  background: rgba(255,255,255,0.7); box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.plant-row:hover { background: rgba(255,255,255,0.9); box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+.plant-main { display: flex; flex-direction: column; gap: 4px; }
+.plant-title { display: flex; align-items: baseline; gap: 10px; font-weight: 600; }
+.plant-price { opacity: .85; }
+.plant-meta { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+.inventory { padding: 2px 8px; border-radius: 999px; background:#eef6ff; border:1px solid #cfe5ff; }
+.inventory.low { background:#fff1f0; border-color:#ffd1ce; }
+.chip-warn { display:inline-block; padding:2px 8px; border-radius:999px; background:#ffebee; color:#b71c1c; font-weight:600; }
+.spacer { flex: 1; }
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .plant-row { padding: 10px; }
+  .plant-title { flex-wrap: wrap; gap: 6px; }
+}

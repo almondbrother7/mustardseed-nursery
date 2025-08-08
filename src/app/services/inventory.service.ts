@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 import { Plant } from '../shared/models/plant-interface';
 import { Category } from '../shared/models/category-interface';
 
@@ -10,14 +11,21 @@ export class InventoryService {
     private firestore: AngularFirestore
   ) {}
 
-  getAllPlants(): Observable<Plant[]> {
+  getAllPlants(onlyInStock: boolean = true): Observable<Plant[]> {
     return this.firestore
-      .collection('plants', ref =>
-        ref.where('inventory', '>=', 1)
-        // .orderBy('name') -- barfs unless sort on inventory first
-      )
-      .valueChanges({ idField: 'id' }) as unknown as Observable<Plant[]>;
-  }
+      .collection<Plant>('plants', (ref) => {
+        let q: firebase.firestore.Query = ref as firebase.firestore.Query;
+        if (onlyInStock) {
+          // Inequality requires an orderBy on the same field
+          q = q.where('inventory', '>=', 1).orderBy('inventory', 'asc');
+          // If you ALSO want alpha sort, either:
+          // 1) add q = q.orderBy('name', 'asc') AND create the composite index (inventory asc, name asc), or
+          // 2) sort by name on the client after valueChanges()
+        }
+        return q;
+      })
+      .valueChanges({ idField: 'id' }) as Observable<Plant[]>;
+    }
 
   getAllCategories(): Observable<Category[]> {
     return this.firestore
@@ -53,7 +61,10 @@ export class InventoryService {
     });
   }
 
-  updatePlant(id: string, updates: Partial<Plant>): Promise<void> {
+  updatePlant (updates: Partial<Plant>): Promise<void> {
+    if (updates.plantID == null) throw Error('Update but plantID not provided.');
+    const id = updates.plantID.toString();
+    
     return this.firestore.collection('plants').doc(id).update(updates);
   }
 

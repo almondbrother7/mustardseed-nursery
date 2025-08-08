@@ -1,0 +1,23 @@
+.plant-dialog-content {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+}
+
+/* Simple span helpers */
+.col-12 { grid-column: span 12; }
+.col-8  { grid-column: span 8; }
+.col-6  { grid-column: span 6; }
+.col-4  { grid-column: span 4; }
+
+/* Keep category a bit narrower visually */
+.category-cell {
+  align-self: end;          /* align nicely with Inventory field */
+  min-width: 220px;         /* keeps it “narrower” */
+}
+
+/* Make everything stack on small screens */
+@media (max-width: 600px) {
+  .col-6, .col-8, .col-4 { grid-column: span 12; }
+  .category-cell { min-width: 0; }
+}
