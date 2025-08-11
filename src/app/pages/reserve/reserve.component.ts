@@ -5,6 +5,7 @@ import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 import { sortPlants } from '../../utils/plant-utils'
+import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 
 @Component({
   selector: 'app-reserve',
@@ -29,6 +30,11 @@ export class ReserveComponent {
   categoryLabelMap = CATEGORY_LABELS;
   sortOrder: 'name' | 'price' = 'name';
 
+  normalizeAssetPath = normalizeAssetPathFn;
+  safeHref = safeHrefFn;
+  public defaultThumb = DEFAULT_THUMB;
+  public defaultFull  = DEFAULT_FULL;
+
   constructor(
     private inventoryService: InventoryService,
     private router: Router,
@@ -39,7 +45,7 @@ export class ReserveComponent {
     this.inventoryService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
       this.plants = sortPlants(this.plants, this.sortOrder)
-      this.categories = [...new Set(this.plants.flatMap(p => p.categories))];
+      this.categories = [...new Set(this.plants.flatMap(p => p.categories ?? []))];
       this.updateFilteredPlants();
     });
 
@@ -58,12 +64,19 @@ export class ReserveComponent {
     }
   }
 
+  public onImgError(evt: Event) {
+    const img = evt.target as HTMLImageElement;
+    if (img && !img.src.endsWith(this.defaultThumb)) {
+      img.src = this.defaultThumb;
+    }
+  }
+
   updateFilteredPlants(): void {
     if (!this.selectedCategories.length) {
       this.filteredPlants = this.plants;
     } else {
       this.filteredPlants = this.plants.filter(plant =>
-        plant.categories.some(cat => this.selectedCategories.includes(cat))
+        (plant.categories ?? []).some(cat => this.selectedCategories.includes(cat))
       );
     }
   }

@@ -19,13 +19,23 @@
 
     <!-- Filtered Plant List -->
     <div class="plant-card" *ngFor="let plant of filteredPlants" [id]="'plant-' + plant.plantID">
-      <img [src]="'/' + plant.thumbnail" [alt]="plant.name" />
+      <img
+        [src]="normalizeAssetPath(plant.thumbnail) || defaultThumb"
+        (error)="onImgError($event)"
+        [alt]="plant.name"
+      />
 
       <h3>
-        <a *ngIf="plant.infoUrl" [href]="plant.infoUrl" target="_blank">
+        <ng-container *ngIf="safeHref(plant.infoUrl); else noLink">
+          <a [href]="plant.infoUrl" target="_blank" rel="noopener noreferrer">
+            {{ plant.name }}
+          </a>
+        </ng-container>
+        <ng-template #noLink>
           {{ plant.name }}
-        </a>
+        </ng-template>
       </h3>
+
 
       <p>{{ plant.description }}</p>
 

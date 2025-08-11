@@ -8,6 +8,7 @@ import { staticCategories, staticPlants } from '../../data/static-data';
 import { Plant } from '../../shared/models/plant-interface';
 import { Category } from '../../shared/models/category-interface';
 import { sortPlants } from '../../utils/plant-utils'
+import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -18,6 +19,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class PlantInventoryComponent {
   @ViewChild(LightboxComponent) lightbox!: LightboxComponent;
+
+  normalizeAssetPath = normalizeAssetPathFn;
+  safeHref = safeHrefFn;
+  public defaultThumb = DEFAULT_THUMB;
+  public defaultFull  = DEFAULT_FULL;
+
   plants: Plant[] = [];
   categories: Category[] = [];
   selectedIndex = 0;
@@ -69,20 +76,37 @@ export class PlantInventoryComponent {
   }
 
   openLightbox(plant: Plant) {
-    const categoryImages = this.plantsFilteredByCategory
-      .filter(p => !!p.fullImage)
-      .map(p => ({
-        src: p.fullImage!,
-        thumb: p.thumbnail,
-        plantID: p.plantID,
-        caption: `<a href='${p.infoUrl}' target='_blank' rel='noopener noreferrer'>${p.name}</a> : ${p.description ?? 'Visit the Gardening page for details'}`
-      }));
+    // Build the gallery for the *current category* with normalized paths + fallbacks
+    const categoryImages = (this.plantsFilteredByCategory ?? [])
+      .map(p => {
+        const full  = this.normalizeAssetPath(p.fullImage) ?? this.defaultFull;
+        const thumb = this.normalizeAssetPath(p.thumbnail) ?? this.defaultThumb;
+
+        const href = this.safeHref(p.infoUrl);
+        const nameHtml = href
+          ? `<a href='${href}' target='_blank' rel='noopener noreferrer'>${p.name}</a>`
+          : `${p.name}`;
+
+        const desc = p.description?.trim() || 'Visit the Gardening page for details';
+
+        return {
+          src: full,
+          thumb,
+          plantID: p.plantID,
+          caption: `${nameHtml} : ${desc}`
+        };
+      });
+
     const index = categoryImages.findIndex(img => img.plantID === plant.plantID);
-    if (index >= 0) {
+
+    if (index >= 0 && categoryImages.length) {
+      // console.log('[LB] opening:', categoryImages[index]);
       this.lightbox.open(categoryImages, index);
+    } else if (categoryImages.length) {
+      this.lightbox.open(categoryImages, 0);
     }
   }
-    
+
   onTabChange(index: number) {
     this.selectedIndex = index;
     this.selectedCategory = this.categories[index]?.slug;
@@ -100,6 +124,13 @@ export class PlantInventoryComponent {
     this.reservationService.add(plant, 1);
     this.snackBar.open(`${plant.name} added to your reservation.`, 'View', { duration: 3000 })
       .onAction().subscribe(() => this.router.navigate(['/reserve']));
+  }
+
+  onImgError(evt: Event) {
+    const img = evt.target as HTMLImageElement;
+    if (img && !img.src.endsWith(this.defaultThumb)) {
+      img.src = this.defaultThumb;
+    }
   }
 
 }

@@ -7,19 +7,23 @@
 
       <!-- Category Intro Section -->
       <div class="category-intro" *ngIf="category.tagline">
-        <h2>{{ category.tagline }}</h2>
-        <p *ngIf="category.description">{{ category.description }}</p>
+        <h2>{{ category?.tagline }}</h2>
+        <p *ngIf="category?.description">{{ category.description }}</p>
       </div>
 
       <!-- Plant Grid -->
       <div class="plant-grid">
-        <ng-container *ngIf="plants?.length! > 0">
+        <ng-container *ngIf="plantsFilteredByCategory?.length">
           <div 
             class="plant-card" 
             *ngFor="let plant of plantsFilteredByCategory"
             (click)="openLightbox(plant)"
           >
-            <img [src]="plant.thumbnail" [alt]="plant.name" />
+            <img 
+              [src]="normalizeAssetPath(plant.thumbnail) || defaultThumb"
+              (error)="onImgError($event)"
+              [alt]="plant.name"
+             />
             <div class="plant-info">
               <h3>{{ plant.name }}</h3>
               <p class="price">${{ plant.price }}</p>

@@ -6,7 +6,10 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "sweep:img": "node scripts/sweep-image-paths.js",
+    "sweep:img:fix": "node scripts/sweep-image-paths.js --fix",
+    "sweep:img:dist": "node scripts/sweep-image-paths.js --dist=dist/mustardseed-nursery/browser"
   },
   "private": true,
   "dependencies": {
