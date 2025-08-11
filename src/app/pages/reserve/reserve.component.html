@@ -9,13 +9,47 @@
 <div class="reserve-page-container">
   <!-- Plant List -->
   <div class="plant-catalog">
-      <mat-label>Filter by Categories</mat-label>
-      <app-category-select
-        [selectedCategories]="selectedCategories"
-        [categories]="categories"
-        [categoryLabelMap]="categoryLabelMap"
-        (selectionChange)="onSelectionChange($event)">
-     </app-category-select>
+
+    <!-- Toolbar -->
+    <div class="toolbar-grid">
+      <!-- Row 1: labels -->
+      <div class="toolbar-labels">
+        <div>Filter by Categories</div>
+        <div>Sort by</div>
+        <div>Direction</div>
+      </div>
+
+      <!-- Row 2: controls -->
+      <div class="toolbar-controls">
+        <app-category-select
+          class="category-control"
+          [selectedCategories]="selectedCategories"
+          [categories]="categories"
+          [categoryLabelMap]="categoryLabelMap"
+          (selectionChange)="onSelectionChange($event)">
+        </app-category-select>
+
+        <mat-form-field appearance="fill" class="sort-dropdown">
+          <!-- no mat-label here; label is above -->
+          <mat-select [(ngModel)]="sortField" (ngModelChange)="updateFilteredPlants()">
+            <mat-option value="name">Name</mat-option>
+            <mat-option value="price">Price</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="sort-toggle-wrap">
+          <mat-button-toggle-group
+            name="sortDir"
+            [(ngModel)]="sortDir"
+            (ngModelChange)="updateFilteredPlants()"
+            aria-label="Sort direction">
+            <mat-button-toggle value="asc">Asc</mat-button-toggle>
+            <mat-button-toggle value="desc">Desc</mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+    </div>
+
 
     <!-- Filtered Plant List -->
     <div class="plant-card" *ngFor="let plant of filteredPlants" [id]="'plant-' + plant.plantID">

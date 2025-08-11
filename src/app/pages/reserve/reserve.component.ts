@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms'; 
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
@@ -28,7 +29,8 @@ export class ReserveComponent {
   orderQuantities: { [plantID: number]: number } = {};
   highlightedPlantID: number | null = null;
   categoryLabelMap = CATEGORY_LABELS;
-  sortOrder: 'name' | 'price' = 'name';
+  sortField: 'name' | 'price' = 'name';
+  sortDir: 'asc' | 'desc' = 'asc';
 
   normalizeAssetPath = normalizeAssetPathFn;
   safeHref = safeHrefFn;
@@ -44,7 +46,7 @@ export class ReserveComponent {
   ngOnInit() {
     this.inventoryService.getAllPlants().subscribe(data => {
       this.plants = Object.values(data ?? {});
-      this.plants = sortPlants(this.plants, this.sortOrder)
+      this.plants = sortPlants(this.plants, this.sortField, this.sortDir)
       this.categories = [...new Set(this.plants.flatMap(p => p.categories ?? []))];
       this.updateFilteredPlants();
     });
@@ -72,13 +74,17 @@ export class ReserveComponent {
   }
 
   updateFilteredPlants(): void {
-    if (!this.selectedCategories.length) {
-      this.filteredPlants = this.plants;
-    } else {
-      this.filteredPlants = this.plants.filter(plant =>
-        (plant.categories ?? []).some(cat => this.selectedCategories.includes(cat))
-      );
-    }
+    const base = !this.selectedCategories.length
+      ? this.plants
+      : this.plants.filter(p =>
+          (p.categories ?? []).some(c => this.selectedCategories.includes(c))
+        );
+    this.filteredPlants = sortPlants(base, this.sortField, this.sortDir);
+  }
+
+  onSortChange(field: 'name' | 'price') {
+    this.sortField = field;
+    this.updateFilteredPlants();
   }
 
   get orderTotal() {

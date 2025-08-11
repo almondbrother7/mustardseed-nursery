@@ -12,10 +12,15 @@ export function slugify(str: string) {
     .replace(/^-+|-+$/g, '');                // trim leading/trailing dashes
 }
 
-export function sortPlants(plants: Plant[], sortField: 'name' | 'price' = 'name'): Plant[] {
-  return plants.slice().sort((a, b) => {
+export function sortPlants(
+  plants: Plant[],
+  sortField: 'name' | 'price' = 'name',
+  sortDir: 'asc' | 'desc' = 'asc'
+): Plant[] {
+  const sorted = plants.slice().sort((a, b) => {
     const valA = a[sortField];
     const valB = b[sortField];
+
     if (typeof valA === 'string' && typeof valB === 'string') {
       return valA.toLowerCase().localeCompare(valB.toLowerCase());
     }
@@ -24,4 +29,6 @@ export function sortPlants(plants: Plant[], sortField: 'name' | 'price' = 'name'
     }
     return 0;
   });
+
+  return sortDir === 'desc' ? sorted.reverse() : sorted;
 }

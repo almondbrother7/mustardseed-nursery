@@ -159,3 +159,101 @@
   outline: 2px solid #4caf50;
   transition: outline 0.3s ease-in-out;
 }
+
+
+/* --- Toolbar (labels row + controls row) --- */
+.toolbar-grid {
+  display: grid;
+  grid-template-rows: auto auto;
+  row-gap: 6px;
+  margin-bottom: 1rem;
+}
+
+/* Three aligned columns across both rows */
+.toolbar-labels,
+.toolbar-controls {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 200px auto;
+  column-gap: 16px;
+  align-items: center; /* center within each row */
+}
+
+/* Labels above the controls */
+.toolbar-labels > div {
+  font-size: 0.85rem;
+  color: #6b7280; /* neutral-500 */
+  font-weight: 600;
+  padding-left: 4px;
+}
+
+/* Category select can shrink but not collapse */
+.category-control {
+  min-width: 260px;
+}
+
+/* Keep sort field a nice width */
+.sort-dropdown {
+  width: 200px;
+}
+
+/* pierce encapsulation to style Material internals */
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle-group { height: 100%; }
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle,
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle-button {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle-label-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* Remove extra bottom spacing on fields inside this bar */
+.toolbar-controls .mat-form-field {
+  margin-bottom: 0;
+}
+
+/* Tighten the internal mat-form-field inside <app-category-select> */
+:host ::ng-deep app-category-select .mat-form-field {
+  margin-bottom: 0;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 720px) {
+  .toolbar-labels,
+  .toolbar-controls {
+    grid-template-columns: 1fr;
+    row-gap: 8px;
+  }
+  .sort-dropdown { width: 100%; }
+  .sort-toggle-wrap { height: 48px; }
+}
+
+.sort-toggle-wrap {
+  align-self: end;          /* line up with the bottom of the row */
+  height: 56px;             /* match filled mat-form-field */
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;      /* adjust to the same baseline; */
+}
+
+/* Reach Angular Material internals for vertical centering */
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle-group,
+:host ::ng-deep .sort-toggle-wrap .mat-mdc-button-toggle-group {
+  height: 100%;
+}
+
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle,
+:host ::ng-deep .sort-toggle-wrap .mat-mdc-button-toggle {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+:host ::ng-deep .sort-toggle-wrap .mat-button-toggle-label-content {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
