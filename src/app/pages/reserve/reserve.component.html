@@ -82,11 +82,18 @@
         mat-stroked-button
         color="primary"
         (click)="reservePlant(plant)"
-        [disabled]="plant.inventory === 0"
+        *ngIf="plant.inventory > 0"
       >
         Reserve
       </button>
-
+      <button
+        mat-stroked-button
+        color="primary"
+        *ngIf="plant.inventory <= 0"
+        (click)="expressInterest(plant)"
+      >
+        Express interest
+      </button>
     </div>
   </div>
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms'; 
 import { Plant } from '../../shared/models/plant-interface';
@@ -13,7 +13,7 @@ import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEF
   templateUrl: './reserve.component.html',
   styleUrls: ['./reserve.component.css']
 })
-export class ReserveComponent {
+export class ReserveComponent implements OnInit, AfterViewInit {
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];
   categories: string[] = [];
@@ -44,7 +44,7 @@ export class ReserveComponent {
   ) {}
 
   ngOnInit() {
-    this.inventoryService.getAllPlants().subscribe(data => {
+    this.inventoryService.getAllPlants(false).subscribe(data => {
       this.plants = Object.values(data ?? {});
       this.plants = sortPlants(this.plants, this.sortField, this.sortDir)
       this.categories = [...new Set(this.plants.flatMap(p => p.categories ?? []))];
@@ -64,6 +64,11 @@ export class ReserveComponent {
         this.reservationService.clearLastAddedPlantID();
       }, 2500);
     }
+  }
+
+  ngAfterViewInit(): void {
+    // Force change detection so mat-button-toggle shows default state
+    Promise.resolve().then(() => this.sortDir = this.sortDir);
   }
 
   public onImgError(evt: Event) {
@@ -154,6 +159,11 @@ export class ReserveComponent {
   onSelectionChange(newSelected: string[]) {
     this.selectedCategories = newSelected;
     this.updateFilteredPlants();
+  }
+
+  expressInterest(plant: Plant) {
+    const msg = this.reservationService.buildInterestMessage(plant);
+    this.reservationService.goToContactWithPrefill(msg, { mode: 'interest', returnPath: '/inventory' });
   }
 
 }

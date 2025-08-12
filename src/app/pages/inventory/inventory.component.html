@@ -11,6 +11,32 @@
         <p *ngIf="category?.description">{{ category.description }}</p>
       </div>
 
+      <!-- slim toolbar under intro -->
+      <div class="inv-toolbar">
+        <div class="inv-toolbar-right">
+          <mat-form-field appearance="fill" class="sort-dropdown">
+            <mat-label>Sort by</mat-label>
+            <mat-select [(ngModel)]="sortOrder" (ngModelChange)="applyFilterSort()">
+              <mat-option value="name">Name</mat-option>
+              <mat-option value="price">Price</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-button-toggle-group
+            [(ngModel)]="sortDir"
+            (ngModelChange)="applyFilterSort()"
+            aria-label="Sort direction">
+            <mat-button-toggle value="asc">Asc</mat-button-toggle>
+            <mat-button-toggle value="desc">Desc</mat-button-toggle>
+          </mat-button-toggle-group>
+
+          <mat-checkbox [(ngModel)]="showOutOfStock" (change)="applyFilterSort()">
+            Show out of stock
+          </mat-checkbox>
+        </div>
+      </div>
+
+
       <!-- Plant Grid -->
       <div class="plant-grid">
         <ng-container *ngIf="plantsFilteredByCategory?.length">
@@ -32,9 +58,17 @@
               mat-stroked-button 
               color="primary" 
               class="request-button"
+              *ngIf="plant.inventory >= 1"
               (click)="reservePlant(plant); $event.stopPropagation();">
               Reserve
-          </button>
+            </button>
+            <button
+              mat-stroked-button
+              color="primary"
+              *ngIf="plant.inventory < 1"
+              (click)="expressInterest(plant)">
+              Express interest
+            </button>
           </div>
       </ng-container>
     </div>

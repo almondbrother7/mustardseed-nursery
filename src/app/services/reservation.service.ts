@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Plant } from '../shared/models/plant-interface';
 import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ export class ReservationService {
   private reservedPlants: { [plantID: string]: { plant: Plant; quantity: number } } = {};
   private lastAddedPlantID: number | null = null;
   private reservedCount$ = new BehaviorSubject<number>(0);
+
+  private router = inject(Router);
 
   constructor() {
     this.loadFromLocalStorage();
@@ -100,6 +103,38 @@ export class ReservationService {
 
   getReservedCount(): Observable<number> {
     return this.reservedCount$.asObservable();
+  }
+
+  buildInterestMessage(plant: Plant): string {
+    const lines = [
+      'Interest Request',
+      `Plant: ${plant.name} (ID: ${plant.plantID})`,
+      'Status: Currently out of stock',
+      plant.price != null ? `Listed price: $${plant.price}` : '',
+      '',
+      'Please let me know when this is available again.'
+    ].filter(Boolean);
+    return lines.join('\n');
+  }
+
+  buildReserveSummary(items: { plant: Plant; quantity: number }[]): string {
+    const body = (items ?? [])
+      .filter(i => i.quantity > 0)
+      .map(i => `${i.quantity} x ${i.plant.name} ($${i.quantity * i.plant.price})`)
+      .join('\n');
+    return `Reservation Summary\n${body}\n`;
+  }
+
+  goToContactWithPrefill(message: string, opts?: { mode?: 'interest'|'reserve'; returnPath?: string; newTab?: boolean }) {
+    const mode = opts?.mode ?? 'interest';
+    const returnPath = opts?.returnPath ?? '/reserve';
+    const tree = this.router.createUrlTree(['/contact'], { queryParams: { message, mode, return: returnPath } });
+    const url  = this.router.serializeUrl(tree);
+    if (opts?.newTab) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      this.router.navigateByUrl(url);
+    }
   }
 
 }

@@ -1,5 +1,5 @@
 import { combineLatest } from 'rxjs';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit,  ViewChild } from '@angular/core';
 import { LightboxComponent } from 'src/app/shared/lightbox/lightbox.component';
 import { Router } from '@angular/router';
 import { InventoryService } from '../../services/inventory.service';
@@ -17,7 +17,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
 })
-export class PlantInventoryComponent {
+export class PlantInventoryComponent implements OnInit, AfterViewInit {
   @ViewChild(LightboxComponent) lightbox!: LightboxComponent;
 
   normalizeAssetPath = normalizeAssetPathFn;
@@ -26,11 +26,14 @@ export class PlantInventoryComponent {
   public defaultFull  = DEFAULT_FULL;
 
   plants: Plant[] = [];
+  allPlants: Plant[] = []; 
   categories: Category[] = [];
   selectedIndex = 0;
   selectedCategory!: string;
   filteredByCategoryMap: { [slug: string]: Plant[] } = {};
   sortOrder: 'name' | 'price' = 'name';
+  sortDir: 'asc' | 'desc' = 'asc';
+  showOutOfStock = true;
 
 
   constructor(private router: Router,
@@ -43,22 +46,37 @@ export class PlantInventoryComponent {
     if (environment.useStaticData) {
       console.log("🧪 Using staticPlants (dev mode)");
       this.categories = staticCategories;
-      this.plants = sortPlants(staticPlants, this.sortOrder)
-        .filter(plant => plant.inventory >= 1)
-      this.buildCategoryMap();
+      this.allPlants = staticPlants;
+      this.recompute(); 
     } else {
-        combineLatest([
-          this.inventoryService.getAllCategories(),
-          this.inventoryService.getAllPlants()
-        ]).subscribe(([categories, plants]) => {
-          this.categories = categories ?? [];
-          this.plants = sortPlants((plants ?? []), this.sortOrder);
-          this.buildCategoryMap();
-        });
+      combineLatest([
+        this.inventoryService.getAllCategories(),
+        this.inventoryService.getAllPlants(false)
+      ]).subscribe(([categories, plants]) => {
+        this.categories = categories ?? [];
+        this.allPlants = plants ?? [];
+        this.recompute();
+      });
     }
   }
 
-  buildCategoryMap(): void {
+  ngAfterViewInit(): void {
+    // Force change detection so mat-button-toggle shows default state
+    Promise.resolve().then(() => this.sortDir = this.sortDir);
+  }
+
+
+  private recompute(): void {
+    const sorted = sortPlants(this.allPlants, this.sortOrder, this.sortDir);
+    const visible = this.showOutOfStock
+      ? sorted
+      : sorted.filter(p => (p.inventory ?? 0) > 0);
+
+    this.plants = visible;
+    this.buildCategoryMap();
+  }
+
+buildCategoryMap(): void {
     this.filteredByCategoryMap = this.categories.reduce((acc, category) => {
       acc[category.slug] = this.plants.filter(plant =>
         plant.categories?.includes(category.slug)
@@ -73,6 +91,15 @@ export class PlantInventoryComponent {
 
   get plantsFilteredByCategory(): Plant[] {
     return this.filteredByCategoryMap[this.selectedCategory] || [];
+  }
+
+  onTabChange(index: number) {
+    this.selectedIndex = index;
+    this.selectedCategory = this.categories[index]?.slug;
+  }
+
+  applyFilterSort(): void {
+    this.recompute();
   }
 
   openLightbox(plant: Plant) {
@@ -107,11 +134,6 @@ export class PlantInventoryComponent {
     }
   }
 
-  onTabChange(index: number) {
-    this.selectedIndex = index;
-    this.selectedCategory = this.categories[index]?.slug;
-  }
-
   onCategoryChange(newCategorySlug: string): void {
     const index = this.categories.findIndex(c => c.slug === newCategorySlug);
     if (index > -1) {
@@ -131,6 +153,15 @@ export class PlantInventoryComponent {
     if (img && !img.src.endsWith(this.defaultThumb)) {
       img.src = this.defaultThumb;
     }
+  }
+
+  expressInterest(plant: Plant) { 
+    const msg = this.reservationService.buildInterestMessage(plant);
+    this.reservationService.goToContactWithPrefill(msg, {
+      mode: 'interest',
+      returnPath: '/inventory',
+      // newTab: true, // ← uncomment to open Contact in a new tab
+    });
   }
 
 }
