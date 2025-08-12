@@ -84,8 +84,7 @@
 .request-button {
   margin-top: 8px;
   margin-bottom: 6px;
-    font-size: 0.85rem;
-
+  font-size: 0.85rem;
   font-weight: 600;
 }
 
@@ -137,4 +136,62 @@
 @media (max-width: 720px) {
   .inv-toolbar { justify-content: stretch; }
   .sort-dropdown { width: 100%; }
+}
+
+/* Align Sort + Asc/Desc in the inventory toolbar without changing template */
+.inv-toolbar {
+  display: flex;
+  align-items: flex-end;          /* baseline align */
+  justify-content: flex-end;
+  gap: 12px;
+  margin: 12px 0 16px;
+  flex-wrap: wrap;
+}
+
+/* remove extra bottom spacing on the select */
+.inv-toolbar-right .mat-form-field {
+  margin-bottom: 0;
+}
+
+/* make the toggle group visually match mat-form-field height */
+.inv-toolbar-right mat-button-toggle-group {
+  height: 56px;                   /* Material filled-field height */
+  align-self: flex-end;           /* sit on the same baseline as the select */
+  display: flex;
+  margin-bottom: 8px;
+}
+
+/* pierce Material internals so the buttons/labels fill and center */
+:host ::ng-deep .inv-toolbar-right .mat-button-toggle-group,
+:host ::ng-deep .inv-toolbar-right .mat-mdc-button-toggle-group {
+  height: 56px;
+}
+:host ::ng-deep .inv-toolbar-right .mat-button-toggle,
+:host ::ng-deep .inv-toolbar-right .mat-mdc-button-toggle {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+:host ::ng-deep .inv-toolbar-right .mat-button-toggle-label-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Optional: if your theme density is a hair off, nudge baseline */
+@media (min-width: 0px) {
+  .inv-toolbar-right mat-button-toggle-group { padding-bottom: 4px; } /* try 4–6px */
+}
+
+/* css (optional wrapper approach) */
+.inv-toggle-wrap {
+  height: 56px;
+  display: flex;
+  align-items: center;
+}
+:host ::ng-deep .inv-toggle-wrap .mat-button-toggle-group,
+:host ::ng-deep .inv-toggle-wrap .mat-mdc-button-toggle-group { height: 100%; }
+:host ::ng-deep .inv-toggle-wrap .mat-button-toggle,
+:host ::ng-deep .inv-toggle-wrap .mat-mdc-button-toggle {
+  height: 100%; display: flex; align-items: center;
 }

@@ -22,13 +22,15 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-button-toggle-group
-            [(ngModel)]="sortDir"
-            (ngModelChange)="applyFilterSort()"
-            aria-label="Sort direction">
-            <mat-button-toggle value="asc">Asc</mat-button-toggle>
-            <mat-button-toggle value="desc">Desc</mat-button-toggle>
-          </mat-button-toggle-group>
+          <div class="inv-toggle-wrap">
+            <mat-button-toggle-group
+              [(ngModel)]="sortDir"
+              (ngModelChange)="applyFilterSort()"
+              aria-label="Sort direction">
+              <mat-button-toggle value="asc">Asc</mat-button-toggle>
+              <mat-button-toggle value="desc">Desc</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
 
           <mat-checkbox [(ngModel)]="showOutOfStock" (change)="applyFilterSort()">
             Show out of stock
