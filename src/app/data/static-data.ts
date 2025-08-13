@@ -8,7 +8,9 @@ export const staticCategories: Category[] = [
     icon: "🦋",
     sortOrder: 1,
     tagline: "Bring the pollinators!",
-    description: "These vibrant flowers attract butterflies and hummingbirds while beautifying your space."
+    description: "These vibrant flowers attract butterflies and hummingbirds while beautifying your space.",
+    about: '',
+    links: undefined
   },
   {
     slug: "native-plants",
@@ -16,7 +18,9 @@ export const staticCategories: Category[] = [
     icon: "🌿",
     sortOrder: 2,
     tagline: "Florida tough, pollinator friendly.",
-    description: "Low-maintenance natives that thrive in your region and support local ecosystems."
+    description: "Low-maintenance natives that thrive in your region and support local ecosystems.",
+    about: '',
+    links: undefined
   },
   {
     slug: "flowering-plants",
@@ -24,7 +28,9 @@ export const staticCategories: Category[] = [
     icon: "🌸",
     sortOrder: 3,
     tagline: "Blooms that wow.",
-    description: "Gorgeous blooms for color, fragrance, and visual impact."
+    description: "Gorgeous blooms for color, fragrance, and visual impact.",
+    about: '',
+    links: undefined
   },
   {
     slug: "survival-garden",
@@ -32,7 +38,12 @@ export const staticCategories: Category[] = [
     icon: "🥬",
     sortOrder: 4,
     tagline: "Grow to thrive.",
-    description: "Nutritious and resilient plants perfect for self-sufficiency and sustainability."
+    description: "Nutritious and resilient plants perfect for self-sufficiency and sustainability.",
+    about: 'If / when you need your own source of food, your family needs protein and carbs. These staple crops that can sustain a household, and they are selected because they grow well in Florida.',
+    links: [
+      { "label": "The Survival Gardener - David The Good", "url": "https://thesurvivalgardener.com/" },
+      { "label": "Florida Native Plant Society", "url": "https://www.fnps.org/" }
+    ]
   },
   {
     slug: "miscellaneous",
@@ -40,7 +51,9 @@ export const staticCategories: Category[] = [
     icon: "🌾",
     sortOrder: 5,
     tagline: "Unique & interesting.",
-    description: "A mix of plants that do not fit elsewhere but deserve a place in your garden."
+    description: "A mix of plants that do not fit elsewhere but deserve a place in your garden.",
+    about: '',
+    links: undefined
   }
 ];
 

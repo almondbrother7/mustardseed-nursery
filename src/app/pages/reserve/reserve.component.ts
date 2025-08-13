@@ -7,6 +7,7 @@ import { ReservationService } from 'src/app/services/reservation.service';
 import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 import { sortPlants } from '../../utils/plant-utils'
 import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-reserve',
@@ -41,9 +42,14 @@ export class ReserveComponent implements OnInit, AfterViewInit {
     private inventoryService: InventoryService,
     private router: Router,
     private reservationService: ReservationService,
+    private configService: ConfigService,
   ) {}
 
   ngOnInit() {
+    const cfg = this.configService.defaults;
+    this.sortField = cfg.sortField;
+    this.sortDir = cfg.sortDir;
+
     this.inventoryService.getAllPlants(false).subscribe(data => {
       this.plants = Object.values(data ?? {});
       this.plants = sortPlants(this.plants, this.sortField, this.sortDir)

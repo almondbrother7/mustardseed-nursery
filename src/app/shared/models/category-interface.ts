@@ -1,3 +1,8 @@
+type CategoryLink = {
+  label: string;
+  url: string;
+};
+
 export interface Category {
   slug: string;
   label: string;
@@ -5,4 +10,6 @@ export interface Category {
   sortOrder?: number;
   tagline?: string;
   description?: string;
+  about?: string
+  links?: CategoryLink[];
 }

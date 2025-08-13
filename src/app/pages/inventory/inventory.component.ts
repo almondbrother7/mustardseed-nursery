@@ -11,11 +11,12 @@ import { sortPlants } from '../../utils/plant-utils'
 import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfigService } from 'src/app/services/config.service';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
-  styleUrls: ['./inventory.component.css']
+  styleUrls: ['./inventory.component.scss']
 })
 export class PlantInventoryComponent implements OnInit, AfterViewInit {
   @ViewChild(LightboxComponent) lightbox!: LightboxComponent;
@@ -35,27 +36,34 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
   sortDir: 'asc' | 'desc' = 'asc';
   showOutOfStock = true;
 
-
   constructor(private router: Router,
     private inventoryService: InventoryService,
     private reservationService: ReservationService,
     private snackBar: MatSnackBar,
+    private configService: ConfigService,
   ) {}
 
   ngOnInit(): void {
+    const cfg = this.configService.defaults;
+    this.sortOrder = cfg.sortField;
+    this.sortDir = cfg.sortDir;
+    this.showOutOfStock = cfg.showOutOfStock;
+
     if (environment.useStaticData) {
       console.log("🧪 Using staticPlants (dev mode)");
       this.categories = staticCategories;
       this.allPlants = staticPlants;
-      this.recompute(); 
+      this.recompute();
+      this.applyPriorityTab(cfg.priorityTab);
     } else {
       combineLatest([
         this.inventoryService.getAllCategories(),
-        this.inventoryService.getAllPlants(false)
+        this.inventoryService.getAllPlants(false) // falwse=fetch-all + filter client-side
       ]).subscribe(([categories, plants]) => {
         this.categories = categories ?? [];
         this.allPlants = plants ?? [];
         this.recompute();
+        this.applyPriorityTab(cfg.priorityTab);
       });
     }
   }
@@ -65,6 +73,20 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
     Promise.resolve().then(() => this.sortDir = this.sortDir);
   }
 
+  private applyPriorityTab(priority?: string) {
+    if (!this.categories?.length) return;
+
+    let idx = -1;
+    if (priority) {
+      idx = this.categories.findIndex(c => c.slug === priority);
+    }
+
+    if (idx === -1) {
+      idx = 0;
+    }
+
+    this.onTabChange(idx);
+  }
 
   private recompute(): void {
     const sorted = sortPlants(this.allPlants, this.sortOrder, this.sortDir);

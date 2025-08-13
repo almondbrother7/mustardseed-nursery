@@ -5,10 +5,30 @@
         <span *ngIf="category.icon">{{ category.icon }}</span> {{ category.label }}
       </ng-template>
 
-      <!-- Category Intro Section -->
-      <div class="category-intro" *ngIf="category.tagline">
-        <h2>{{ category?.tagline }}</h2>
-        <p *ngIf="category?.description">{{ category.description }}</p>
+      <!-- Category Section -->
+      <div class="category-info" *ngIf="category">
+        
+        <!-- Tagline + description -->
+        <div class="category-intro category-block" *ngIf="category.tagline">
+          <h2>{{ category?.tagline }}</h2>
+          <p *ngIf="category?.description">{{ category.description }}</p>
+        </div>
+
+        <!-- About -->
+        <div class="category-about category-block" *ngIf="category?.about as about">
+          <div class="prose" [innerHTML]="about | markdownOrBreaks"></div>
+        </div>
+
+        <!-- Helpful links -->
+        <div class="category-links category-block" *ngIf="category?.links?.length">
+          <h3>Helpful links</h3>
+          <ul>
+            <li *ngFor="let link of category.links">
+              <a [href]="link.url" target="_blank" rel="noopener">{{ link.label }}</a>
+            </li>
+          </ul>
+        </div>
+
       </div>
 
       <!-- slim toolbar under intro -->
@@ -87,5 +107,4 @@
   <p class="no-data-message">No plants found! Please check back later.</p>
 </ng-template>
 
-<!-- Shared Lightbox -->
 <app-lightbox [categoryChange]="onCategoryChange.bind(this)"></app-lightbox>
