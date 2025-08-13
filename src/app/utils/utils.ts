@@ -1,5 +1,5 @@
-export const DEFAULT_THUMB = '/assets/img/placeholder-thumb.jpg';
-export const DEFAULT_FULL  = '/assets/img/placeholder-full.jpg';
+export const DEFAULT_THUMB = '/assets/images/inventory/thumbs/placeholder-thumb.jpg';
+export const DEFAULT_FULL  = '/assets/images/inventory/placeholder-full.jpg';
 
 export function normalizeAssetPath(path?: string | null): string | null {
   if (!path) return null;

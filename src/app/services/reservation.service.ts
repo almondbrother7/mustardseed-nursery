@@ -108,7 +108,7 @@ export class ReservationService {
   buildInterestMessage(plant: Plant): string {
     const lines = [
       'Interest Request',
-      `Plant: ${plant.name} (ID: ${plant.plantID})`,
+      `Plant: ${plant.name}`,
       'Status: Currently out of stock',
       plant.price != null ? `Listed price: $${plant.price}` : '',
       '',

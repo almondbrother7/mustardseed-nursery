@@ -142,7 +142,8 @@ buildCategoryMap(): void {
           src: full,
           thumb,
           plantID: p.plantID,
-          caption: `${nameHtml} : ${desc}`
+          caption: `${nameHtml} : ${desc}`,
+          inventory: p.inventory
         };
       });
 

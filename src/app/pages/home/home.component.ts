@@ -20,10 +20,10 @@ export class HomeComponent {
   visibleLightbox = false;
 
   miniGallery = [
-    { src: 'assets/images/hero1.jpg', caption: 'Curcoma', thumb: 'assets/images/hero1.jpg' },
-    { src: 'assets/images/hero2.jpg', caption: 'Cassava', thumb: 'assets/images/hero2.jpg' },
-    { src: 'assets/images/hero3.jpg', caption: 'Knockout Roses', thumb: 'assets/images/hero3.jpg' },
-    { src: 'assets/images/hero4.jpg', caption: 'Chia', thumb: 'assets/images/hero4.jpg' }
+    { src: 'assets/images/hero1.jpg', caption: 'Curcoma', thumb: 'assets/images/hero1.jpg', inventory: 1 },
+    { src: 'assets/images/hero2.jpg', caption: 'Cassava', thumb: 'assets/images/hero2.jpg', inventory: 1 },
+    { src: 'assets/images/hero3.jpg', caption: 'Knockout Roses', thumb: 'assets/images/hero3.jpg', inventory: 1 },
+    { src: 'assets/images/hero4.jpg', caption: 'Chia', thumb: 'assets/images/hero4.jpg', inventory: 1 }
   ];
 
   openLightbox(index: number): void {

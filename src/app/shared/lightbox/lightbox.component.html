@@ -1,15 +1,33 @@
 <div *ngIf="visible" class="lightbox fade-in" (click)="close()">
   <div class="lightbox-content" (click)="$event.stopPropagation()">
 
+    <!-- Left arrow -->
     <button class="lightbox-arrow left" (click)="prev()">&#10094;</button>
 
     <!-- Image container -->
     <div class="lightbox-image-container">
-      <img [src]="currentImage.src" [alt]="currentImage.caption || ''">
+      <div class="lightbox-img-wrap"
+           [class.is-out]="currentImage.inventory < 1"
+           [attr.aria-label]="currentImage.inventory < 1 ? 'Out of stock' : null">
+
+        <img
+          [attr.data-idx]="currentIndex" 
+          [src]="getFullSrc()"
+          [attr.alt]="plainAlt"
+          (error)="onFullImageError($event)"
+        />
+
+        <!-- Diagonal slash with text -->
+        <span class="stock-slash" *ngIf="currentImage.inventory < 1">
+          OUT OF STOCK
+        </span>
+      </div>
     </div>
 
-    <div class="lightbox-caption" [innerHTML]="currentImage.caption"></div>
+    <!-- Caption (render HTML) -->
+    <div class="lightbox-caption" [innerHTML]="currentImage.caption || ''"></div>
 
+    <!-- Right arrow -->
     <button class="lightbox-arrow right" (click)="next()">&#10095;</button>
 
   </div>

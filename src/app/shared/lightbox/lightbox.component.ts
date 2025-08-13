@@ -1,9 +1,11 @@
 import { Component, Input, HostListener } from '@angular/core';
+import { DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 
 export interface LightboxImage {
   src: string;
   caption?: string;
   thumb?: string;
+  inventory: number;
 }
 
 @Component({
@@ -16,11 +18,51 @@ export class LightboxComponent {
   @Input() startIndex = 0;
   @Input() categoryChange?: (category: string) => void;
 
+  readonly defaultThumb = DEFAULT_THUMB;
+  readonly defaultFull  = DEFAULT_FULL;
+
   currentIndex = 0;
   visible = false;
+  private fullFailed = new Set<number>();
 
   get currentImage(): LightboxImage {
+    const src = this.images[this.currentIndex]?.src.trim();
+    if (!(src && src.length > 0)) this.images[this.currentIndex].src = this.defaultFull;
     return this.images[this.currentIndex];
+  }
+
+  private isLikelyImageUrl(s?: string | null): s is string {
+    if (!s) return false;
+    if (/[<>]/.test(s)) return false; // guard against accidental HTML
+    return /\.(jpe?g|png|webp|gif|avif|svg)(\?.*)?$/i.test(s) || /^([/.]|https?:|blob:|data:)/.test(s);
+  }
+
+  getFullSrc(): string {
+    const img = this.currentImage;
+    if (!img) return this.defaultFull;
+    if (this.fullFailed.has(this.currentIndex)) return this.defaultFull;
+
+    const src = img.src?.trim();
+    const thumb = img.thumb?.trim();
+    const candidate = src?.length ? src : (thumb?.length ? thumb : this.defaultFull);
+    return this.isLikelyImageUrl(candidate) ? candidate : this.defaultFull;
+  }
+
+  onFullImageError(e: Event): void {
+    const el = e.target as HTMLImageElement;
+    if (el.src.includes(this.defaultFull)) return; // avoid loops if placeholder 404s
+    this.fullFailed.add(this.currentIndex);            // remember this slide failed
+    el.src = this.defaultFull;                     // swap immediately
+  }
+
+  private stripHtml(s?: string | null): string {
+    return (s ?? '').replace(/<[^>]*>/g, '').trim();
+  }
+
+  get plainAlt(): string {
+    // if image has a name, prefer it; otherwise strip the caption
+    const name = (this as any).currentImage?.name as string | undefined;
+    return name?.trim() || this.stripHtml(this.currentImage?.caption) || 'Plant image';
   }
 
   open(images: LightboxImage[], startIndex = 0): void {

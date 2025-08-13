@@ -8,6 +8,7 @@
 .plant-card {
   display: flex;
   flex-direction: column;
+  padding-bottom: 0.75rem;
   justify-content: space-between;
   background: #fff;
   border-radius: 8px;
@@ -57,13 +58,6 @@
   margin: 0.5rem 0 1.5rem;
   font-size: 1rem;
   color: #555;
-}
-
-.request-button {
-  margin-top: 8px;
-  margin-bottom: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
 }
 
 .no-data-message, .no-inventory {
@@ -255,3 +249,55 @@
   font-weight: 600;
 }
 
+.ribbon-wrap { position: relative; overflow: hidden; border-radius: 12px; }
+
+/* Center-slash variant (matches lightbox feel) */
+.ribbon {
+  position: absolute;
+  left: -42%;             /* overhang so it spans corner-to-corner */
+  right: -42%;
+  top: 50%;
+  transform: translateY(-50%) rotate(-32deg);  /* steeper diagonal */
+  transform-origin: center;
+
+  background: #c62828;
+  color: #fff;
+  text-align: center;
+  padding: 8px 0;         /* vertical only */
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,.25);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* keep the dimming */
+.img-wrap.is-out img { filter: grayscale(80%) brightness(.85); }
+.img-wrap.is-out::before {
+  content: ""; position: absolute; inset: 0;
+  background: rgba(0,0,0,.1); pointer-events: none;
+}
+
+.action-button {
+  align-self: stretch;
+  margin-top: 0.5rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  text-transform: none;        /* keep normal capitalization */
+  border-width: 1.5px;         /* slightly sturdier stroke */
+}
+
+/* ensure the stroked primary color reads clearly */
+.action-button.mat-mdc-stroked-button.mat-primary {
+  /* Material 3 uses CSS vars; these work well across themes */
+  color: #2e7d32;
+  border-color: rgba(46,125,50,.6);
+}
+
+/* optional hover focus polish */
+.action-button:hover {
+  border-color: rgba(46,125,50,.9);
+}

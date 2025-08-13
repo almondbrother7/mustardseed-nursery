@@ -67,30 +67,37 @@
             *ngFor="let plant of plantsFilteredByCategory"
             (click)="openLightbox(plant)"
           >
+          <div class="img-wrap ribbon-wrap" [class.is-out]="plant.inventory < 1">
             <img 
               [src]="normalizeAssetPath(plant.thumbnail) || defaultThumb"
               (error)="onImgError($event)"
               [alt]="plant.name"
-             />
+            />
+            <!-- Diagonal ribbon across the corner -->
+            <span class="ribbon" *ngIf="plant.inventory < 1">OUT OF STOCK</span>
+          </div>
+
             <div class="plant-info">
               <h3>{{ plant.name }}</h3>
               <p class="price">${{ plant.price }}</p>
             </div>
-            <button 
-              mat-stroked-button 
-              color="primary" 
-              class="request-button"
-              *ngIf="plant.inventory >= 1"
-              (click)="reservePlant(plant); $event.stopPropagation();">
-              Reserve
-            </button>
-            <button
-              mat-stroked-button
-              color="primary"
-              *ngIf="plant.inventory < 1"
-              (click)="expressInterest(plant)">
-              Express interest
-            </button>
+              <button
+                mat-stroked-button
+                color="primary"
+                class="action-button"
+                *ngIf="plant.inventory >= 1"
+                (click)="reservePlant(plant); $event.stopPropagation();">
+                Reserve
+              </button>
+
+              <button
+                mat-stroked-button
+                color="primary"
+                class="action-button"
+                *ngIf="plant.inventory < 1"
+                (click)="expressInterest(plant); $event.stopPropagation();">
+                Express interest
+              </button>
           </div>
       </ng-container>
     </div>

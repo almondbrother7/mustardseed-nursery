@@ -257,3 +257,79 @@
   align-items: center;
   height: 100%;
 }
+
+/* Wide image wrapper with banner */
+.reserve-hero.banner-wrap {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f4f4f4;
+  margin-bottom: 0.5rem;
+}
+.reserve-hero.banner-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Dim like the lightbox when out of stock */
+.reserve-hero.banner-wrap.is-out img {
+  filter: grayscale(80%) brightness(0.85);
+}
+.reserve-hero.banner-wrap.is-out::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.12);
+  pointer-events: none;
+}
+
+/* Red top banner */
+.stock-banner {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  background: rgba(198, 40, 40, 0.96);
+  color: #fff;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 8px 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.availability-badge {
+  display: inline-block;
+  min-width: 1.75em;
+  padding: 0 0.4em;
+  text-align: center;
+  border-radius: 999px;
+  margin-left: 0.25rem;
+  font-weight: 700;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+.availability-badge.zero {
+  color: #c62828;
+  background: #ffebee;           /* light red */
+  border-color: #ffcdd2;
+}
+.availability-badge.low {
+  color: #ef6c00;
+  background: #fff8e1;           /* light amber */
+  border-color: #ffe0b2;
+}
+
+.plant-card.is-out {
+  /* very light red border glow */
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 0 0 1px #ffe0e0 inset;
+}
+
+.reserve-hero.banner-wrap.is-out img { filter: grayscale(80%) brightness(0.85); }
+.reserve-hero.banner-wrap.is-out::before {
+  content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.12); pointer-events: none;
+}
