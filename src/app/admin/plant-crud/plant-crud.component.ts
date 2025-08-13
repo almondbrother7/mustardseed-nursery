@@ -31,7 +31,10 @@ export class PlantCrudComponent implements OnInit {
     this.inventoryService.getAllPlants(false).subscribe(data => {
       this.plants = Object.values(data ?? {});
       this.plants = sortPlants(this.plants, this.sortOrder)      
-      this.categories = [...new Set(this.plants.flatMap(p => p.categories))];
+      this.categories = [...new Set(this.plants.flatMap(p => p.categories))]
+        .sort((a, b) =>
+          (CATEGORY_LABELS[a] ?? a).localeCompare(CATEGORY_LABELS[b] ?? b, undefined, { sensitivity: 'base' })
+        );
       this.updateFilteredPlants();
     });
   }

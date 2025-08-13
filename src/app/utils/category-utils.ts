@@ -5,7 +5,8 @@ export const CATEGORY_LABELS: { [key: string]: string } = {
   'native-plants': 'Native Plants',
   'flowering-plants': 'Flowering Plants',
   'survival-garden': 'Survival Garden',
-  'miscellaneous': 'Miscellaneous'
+  'miscellaneous': 'Miscellaneous',
+  'specials': 'Specials'
 };
 
 export function getCategoryLabel(slug: string): string {
