@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { InventoryService } from 'src/app/services/inventory.service';
 import { Plant } from 'src/app/shared/models/plant-interface';
-import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 import { PlantEditDialogComponent } from '../plant-edit-dialog/plant-edit-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { sortPlants } from '../../utils/plant-utils'
+import { combineLatest } from 'rxjs';
+import { Category } from 'src/app/shared/models/category-interface';
 
 @Component({
   selector: 'app-plant-crud',
@@ -17,9 +18,10 @@ export class PlantCrudComponent implements OnInit {
   selectedPlant: Plant | null = null;
   isEditing = false;
   filteredPlants: Plant[] = [];
-  categories: string[] = [];
+  categories: Category[] = [];
+  categorySlugs: string[] = [];
   selectedCategories: string[] = [];
-  categoryLabelMap = CATEGORY_LABELS;
+  categoryLabelMap: { [key: string]: string } = {};
   sortOrder: 'name' | 'price' = 'name';
 
   constructor(
@@ -28,13 +30,23 @@ export class PlantCrudComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.inventoryService.getAllPlants(false).subscribe(data => {
-      this.plants = Object.values(data ?? {});
-      this.plants = sortPlants(this.plants, this.sortOrder)      
-      this.categories = [...new Set(this.plants.flatMap(p => p.categories))]
+    combineLatest([
+      this.inventoryService.getAllCategories(),
+      this.inventoryService.getAllPlants(false),
+    ]).subscribe(([categories, plants]) => {
+      this.categories = (categories ?? [])
+        .slice()
         .sort((a, b) =>
-          (CATEGORY_LABELS[a] ?? a).localeCompare(CATEGORY_LABELS[b] ?? b, undefined, { sensitivity: 'base' })
+          (a.sortOrder ?? 999) - (b.sortOrder ?? 999) ||
+          (a.label ?? '').localeCompare(b.label ?? '', undefined, { sensitivity: 'base' })
         );
+
+      this.categoryLabelMap = Object.fromEntries(
+        this.categories.map(c => [c.slug, c.label])
+      );
+      this.categorySlugs = this.categories.map(c => c.slug);
+      this.plants = sortPlants(plants, this.sortOrder);
+
       this.updateFilteredPlants();
     });
   }
@@ -69,7 +81,8 @@ export class PlantCrudComponent implements OnInit {
       data: {
         mode: 'edit',
         plant: { ...plant },
-        existingSlugs: Array.from(this.getExistingSlugs(plant.plantID))
+        existingSlugs: Array.from(this.getExistingSlugs(plant.plantID)),
+        categories: this.categories
       }
     });
 
@@ -77,7 +90,6 @@ export class PlantCrudComponent implements OnInit {
       if (result) this.inventoryService.updatePlant(result);
     });
   }
-
 
   savePlant() {
     if (this.selectedPlant) {
@@ -109,7 +121,8 @@ export class PlantCrudComponent implements OnInit {
           thumbnail: 'assets/images/inventory/thumbs/',
           fullImage: 'assets/images/inventory/'
         },
-        existingSlugs: Array.from(this.getExistingSlugs())
+        existingSlugs: Array.from(this.getExistingSlugs()),
+        categories: this.categories,
       }
     });
 
@@ -123,9 +136,11 @@ export class PlantCrudComponent implements OnInit {
 
   private getExistingSlugs(excludePlantID?: number): Set<string> {
     return new Set(
-      this.plants
-        .filter(p => p.slug && p.plantID !== excludePlantID)
-        .map(p => p.slug!.toLowerCase().trim())
+      this.categorySlugs
+      // TODO: when editing, will have plantID to exclude.
+      // this.plants
+      //   .filter(p => p.slug && p.plantID !== excludePlantID)
+      //   .map(p => p.slug!.toLowerCase().trim())
     );
   }
 

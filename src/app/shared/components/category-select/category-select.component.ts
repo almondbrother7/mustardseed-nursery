@@ -1,6 +1,7 @@
 // src/app/shared/components/category-select/category-select.component.ts
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { InventoryService } from 'src/app/services/inventory.service';
+import { Category } from '../../models/category-interface';
 
 @Component({
   selector: 'app-category-select',
@@ -9,14 +10,12 @@ import { InventoryService } from 'src/app/services/inventory.service';
 })
 export class CategorySelectComponent {
   @Input() selectedCategories: string[] = [];
-  @Input() categories: string[] = [];
-  @Input() categoryLabelMap: { [key: string]: string } = {};
-
+  @Input() categories: Category[] = [];
   @Output() selectionChange = new EventEmitter<string[]>();
 
   constructor(private inventoryService: InventoryService) {}
 
-  onSelectionChange(event: any): void {
+  onSelectionChange(event: { value: string[] }): void {
     this.selectionChange.emit(event.value);
   }
 }

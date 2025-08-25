@@ -12,4 +12,6 @@ export interface Category {
   description?: string;
   about?: string
   links?: CategoryLink[];
+  showOnReserve?: boolean;
+  loaded?: boolean;
 }

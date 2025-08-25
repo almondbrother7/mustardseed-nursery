@@ -1,13 +1,14 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Plant } from 'src/app/shared/models/plant-interface';
-import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 import { slugify } from '../../utils/plant-utils'
+import { Category } from 'src/app/shared/models/category-interface';
 
 export interface PlantEditData {
   mode: 'add' | 'edit';
   plant: Plant;
-  existingSlugs: string[]; // from parent
+  existingSlugs: string[];
+  categories: Category[];
 }
 
 @Component({
@@ -21,26 +22,32 @@ export class PlantEditDialogComponent {
   readonly INFO_BASE  = 'https://garden.org/plants/search/text/?q=';
   plant: Plant;
   mode: string;
-  allCategories: string[] = [];
-  categoryLabelMap = CATEGORY_LABELS;
+  allCategories: Category[] = [];
+  categoryLabelMap: { [key: string]: string };
+  // categoryLabelMap: Record<string, string> = {};
   slugError = '';
   private originalName = '';
   private originalSlug = '';
-
 
   constructor(
     public dialogRef: MatDialogRef<PlantEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: PlantEditData
   ) {
-    this.allCategories = Object.values(this.categoryLabelMap);
+    this.allCategories = (data.categories ?? []).slice().sort((a, b) =>
+      (a.sortOrder ?? 999) - (b.sortOrder ?? 999) ||
+      (a.label ?? '').localeCompare(b.label ?? '', undefined, { sensitivity: 'base' })
+    );
     this.mode = data.mode
     this.plant = data.plant;
     this.originalName = this.plant.name ?? '';
     this.originalSlug = (this.plant.slug ?? '').toLowerCase().trim();
+    this.categoryLabelMap = Object.fromEntries(
+      this.allCategories.map(c => [c.slug, c.label])
+    );
   }
 
-  onCategoriesChange(selected: string[]): void {
-    this.plant.categories = selected;
+  onCategoriesChange(selectedSlugs: string[]): void {
+    this.plant.categories = selectedSlugs;
   }
 
   cancel(): void {

@@ -4,10 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
-import { CATEGORY_LABELS } from 'src/app/utils/category-utils';
 import { sortPlants } from '../../utils/plant-utils'
 import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 import { ConfigService } from 'src/app/services/config.service';
+import { Category } from 'src/app/shared/models/category-interface';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-reserve',
@@ -17,7 +18,8 @@ import { ConfigService } from 'src/app/services/config.service';
 export class ReserveComponent implements OnInit, AfterViewInit {
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];
-  categories: string[] = [];
+  categories: Category[] = [];
+  categorySlugs: string[] = [];
   selectedCategories: string[] = [];
 
   holdHours: number = 72;
@@ -29,7 +31,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   reservedItems: { plant: Plant; quantity: number }[] = [];
   orderQuantities: { [plantID: number]: number } = {};
   highlightedPlantID: number | null = null;
-  categoryLabelMap = CATEGORY_LABELS;
+  categoryLabelMap: { [key: string]: string } = {};
   sortField: 'name' | 'price' = 'name';
   sortDir: 'asc' | 'desc' = 'asc';
 
@@ -50,29 +52,39 @@ export class ReserveComponent implements OnInit, AfterViewInit {
     this.sortField = cfg.sortField;
     this.sortDir = cfg.sortDir;
 
-    this.inventoryService.getAllPlants(false).subscribe(data => {
-      this.plants = Object.values(data ?? {});
-      this.plants = sortPlants(this.plants, this.sortField, this.sortDir)
-      this.categories = [...new Set(this.plants.flatMap(p => p.categories ?? []))]
+    combineLatest([
+      this.inventoryService.getAllCategories(),
+      this.inventoryService.getAllPlants(false),
+    ]).subscribe(([categories, plants]) => {
+      this.categories = (categories ?? [])
+        .slice()
+        .filter(c => c.showOnReserve)
         .sort((a, b) =>
-          (CATEGORY_LABELS[a] ?? a).localeCompare(CATEGORY_LABELS[b] ?? b, undefined, { sensitivity: 'base' })
+          (a.sortOrder ?? 999) - (b.sortOrder ?? 999) ||
+          (a.label ?? '').localeCompare(b.label ?? '', undefined, { sensitivity: 'base' })
         );
+
+      this.categoryLabelMap = Object.fromEntries(
+        this.categories.map(c => [c.slug, c.label])
+      );
+      this.categorySlugs = this.categories.map(c => c.slug);
+      this.plants = Array.isArray(plants) ? plants : Object.values(plants ?? {});
       this.updateFilteredPlants();
+
+      this.reservedItems = this.reservationService.getItems();
+      this.highlightedPlantID = this.reservationService.getLastAddedPlantID();
+
+      for (const item of this.reservedItems) {
+        this.orderQuantities[item.plant.plantID] = item.quantity;
+      }
+
+      if (this.highlightedPlantID !== null) {
+        setTimeout(() => {
+          this.highlightedPlantID = null;
+          this.reservationService.clearLastAddedPlantID();
+        }, 2500);
+      }
     });
-
-    this.reservedItems = this.reservationService.getItems();
-    this.highlightedPlantID = this.reservationService.getLastAddedPlantID();
-
-    for (const item of this.reservedItems) {
-      this.orderQuantities[item.plant.plantID] = item.quantity;
-    }
-
-    if (this.highlightedPlantID !== null) {
-      setTimeout(() => {
-        this.highlightedPlantID = null;
-        this.reservationService.clearLastAddedPlantID();
-      }, 2500);
-    }
   }
 
   ngAfterViewInit(): void {

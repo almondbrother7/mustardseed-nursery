@@ -5,8 +5,8 @@
     multiple
     (selectionChange)="onSelectionChange($event)">
     
-    <mat-option *ngFor="let category of categories" [value]="category">
-      {{ categoryLabelMap[category] || category }}
+    <mat-option *ngFor="let category of categories" [value]="category.slug">
+      {{ category.label }}
     </mat-option>
     
   </mat-select>
