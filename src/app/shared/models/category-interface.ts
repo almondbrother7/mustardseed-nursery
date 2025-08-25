@@ -13,5 +13,4 @@ export interface Category {
   about?: string
   links?: CategoryLink[];
   showOnReserve?: boolean;
-  loaded?: boolean;
 }

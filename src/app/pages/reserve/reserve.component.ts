@@ -1,10 +1,10 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms'; 
+import { FormsModule } from '@angular/forms';
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
-import { sortPlants } from '../../utils/plant-utils'
+import { sortPlants } from '../../utils/plant-utils';
 import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 import { ConfigService } from 'src/app/services/config.service';
 import { Category } from 'src/app/shared/models/category-interface';
@@ -19,19 +19,13 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   plants: Plant[] = [];
   filteredPlants: Plant[] = [];
   categories: Category[] = [];
-  categorySlugs: string[] = [];
-  selectedCategories: string[] = [];
+  selectedCategories: string[] = []; // slugs
 
   holdHours: number = 72;
-  customer = {
-    name: '',
-    email: '',
-    message: ''
-  };
+  customer = { name: '', email: '', message: '' };
   reservedItems: { plant: Plant; quantity: number }[] = [];
   orderQuantities: { [plantID: number]: number } = {};
   highlightedPlantID: number | null = null;
-  categoryLabelMap: { [key: string]: string } = {};
   sortField: 'name' | 'price' = 'name';
   sortDir: 'asc' | 'desc' = 'asc';
 
@@ -54,30 +48,23 @@ export class ReserveComponent implements OnInit, AfterViewInit {
 
     combineLatest([
       this.inventoryService.getAllCategories(),
-      this.inventoryService.getAllPlants(false),
+      this.inventoryService.getAllPlants(false), // in-stock only
     ]).subscribe(([categories, plants]) => {
-      this.categories = (categories ?? [])
-        .slice()
-        .filter(c => c.showOnReserve)
-        .sort((a, b) =>
-          (a.sortOrder ?? 999) - (b.sortOrder ?? 999) ||
-          (a.label ?? '').localeCompare(b.label ?? '', undefined, { sensitivity: 'base' })
-        );
-
-      this.categoryLabelMap = Object.fromEntries(
-        this.categories.map(c => [c.slug, c.label])
+      const sorted = (categories ?? []).slice().sort((a, b) =>
+        (a.sortOrder ?? 999) - (b.sortOrder ?? 999) ||
+        (a.label ?? '').localeCompare(b.label ?? '', undefined, { sensitivity: 'base' })
       );
-      this.categorySlugs = this.categories.map(c => c.slug);
+
+      this.categories = sorted; // .filter(c => !!c.showOnReserve);
+      this.selectedCategories = this.categories.filter(c => !!c.showOnReserve).map(c => c.slug);
       this.plants = Array.isArray(plants) ? plants : Object.values(plants ?? {});
       this.updateFilteredPlants();
 
       this.reservedItems = this.reservationService.getItems();
       this.highlightedPlantID = this.reservationService.getLastAddedPlantID();
-
       for (const item of this.reservedItems) {
         this.orderQuantities[item.plant.plantID] = item.quantity;
       }
-
       if (this.highlightedPlantID !== null) {
         setTimeout(() => {
           this.highlightedPlantID = null;
@@ -105,6 +92,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
       : this.plants.filter(p =>
           (p.categories ?? []).some(c => this.selectedCategories.includes(c))
         );
+
     this.filteredPlants = sortPlants(base, this.sortField, this.sortDir);
   }
 
@@ -120,12 +108,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   reserveOrder(): void {
     const orderedItems = this.reservedItems
       .filter(p => p.quantity > 0)
-      .map(p => ({
-        name: p.plant.name,
-        id: p.plant.plantID,
-        quantity: p.quantity,
-        price: p.plant.price
-      }));
+      .map(p => ({ name: p.plant.name, id: p.plant.plantID, quantity: p.quantity, price: p.plant.price }));
 
     if (orderedItems.length === 0) {
       alert('Please select at least one plant to reserve.');
@@ -138,9 +121,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
 
     const fullMessage = `Reservation Summary\n${orderSummary}\n`;
 
-    this.router.navigate(['/contact'], {
-      queryParams: { message: fullMessage }
-    });
+    this.router.navigate(['/contact'], { queryParams: { message: fullMessage } });
   }
 
   updateQuantity(plantID: number, qty: number) {
@@ -153,9 +134,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   }
 
   getSubtotal() {
-    return this.reservedItems.reduce((acc, item) => {
-      return acc + (item.quantity * item.plant.price);
-    }, 0);
+    return this.reservedItems.reduce((acc, item) => acc + (item.quantity * item.plant.price), 0);
   }
 
   reservePlant(plant: Plant): void {
@@ -186,5 +165,4 @@ export class ReserveComponent implements OnInit, AfterViewInit {
     const msg = this.reservationService.buildInterestMessage(plant);
     this.reservationService.goToContactWithPrefill(msg, { mode: 'interest', returnPath: '/inventory' });
   }
-
 }
