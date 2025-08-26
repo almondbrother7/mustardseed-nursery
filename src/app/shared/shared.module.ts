@@ -4,12 +4,14 @@ import { CategorySelectComponent } from './components/category-select/category-s
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { MarkdownOrBreaksPipe } from './pipes/markdown-or-breaks.pipe';
+import { HighlightPipe } from './pipes/highlight.pipe';
 
 
 @NgModule({
   declarations: [
     CategorySelectComponent,
-    MarkdownOrBreaksPipe
+    MarkdownOrBreaksPipe,
+    HighlightPipe,
   ],
   imports: [
     CommonModule,
@@ -18,7 +20,8 @@ import { MarkdownOrBreaksPipe } from './pipes/markdown-or-breaks.pipe';
   ],
   exports: [
     CategorySelectComponent,
-    MarkdownOrBreaksPipe
+    MarkdownOrBreaksPipe,
+    HighlightPipe,
   ]
 })
 export class SharedModule {}

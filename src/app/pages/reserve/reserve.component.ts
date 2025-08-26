@@ -1,6 +1,11 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+
+import { combineLatest } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 import { Plant } from '../../shared/models/plant-interface';
 import { InventoryService } from '../../services/inventory.service';
 import { ReservationService } from 'src/app/services/reservation.service';
@@ -8,7 +13,6 @@ import { sortPlants } from '../../utils/plant-utils';
 import { normalizeAssetPath as normalizeAssetPathFn, safeHref as safeHrefFn, DEFAULT_THUMB, DEFAULT_FULL } from '../../utils/utils';
 import { ConfigService } from 'src/app/services/config.service';
 import { Category } from 'src/app/shared/models/category-interface';
-import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-reserve',
@@ -33,12 +37,15 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   safeHref = safeHrefFn;
   public defaultThumb = DEFAULT_THUMB;
   public defaultFull  = DEFAULT_FULL;
+  search = new FormControl('');
+  private query = '';
 
   constructor(
     private inventoryService: InventoryService,
     private router: Router,
     private reservationService: ReservationService,
     private configService: ConfigService,
+    private route: ActivatedRoute,
   ) {}
 
   ngOnInit() {
@@ -72,6 +79,22 @@ export class ReserveComponent implements OnInit, AfterViewInit {
         }, 2500);
       }
     });
+
+    // URL -> input
+    this.route.queryParamMap.subscribe(p => {
+      const q = p.get('q') || '';
+      if (q !== this.search.value) this.search.setValue(q, { emitEvent: true });
+    });
+
+    // input -> filter (+ update URL)
+    this.search.valueChanges.pipe(
+      debounceTime(250),
+      distinctUntilChanged()
+    ).subscribe(q => {
+      this.query = (q ?? '').trim().toLowerCase();
+      this.router.navigate([], { queryParams: { q: q || null }, queryParamsHandling: 'merge' });
+      this.updateFilteredPlants();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -87,13 +110,18 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   }
 
   updateFilteredPlants(): void {
-    const base = !this.selectedCategories.length
+    const byCategory = !this.selectedCategories.length
       ? this.plants
-      : this.plants.filter(p =>
-          (p.categories ?? []).some(c => this.selectedCategories.includes(c))
-        );
+      : this.plants.filter(p => (p.categories ?? []).some(c => this.selectedCategories.includes(c)));
 
-    this.filteredPlants = sortPlants(base, this.sortField, this.sortDir);
+    const q = this.query;
+    const byQuery = !q ? byCategory : byCategory.filter(p => {
+      const name = (p.name ?? '').toLowerCase();
+      const desc = (p.description ?? '').toLowerCase();
+      return name.includes(q) || desc.includes(q);
+    });
+
+    this.filteredPlants = sortPlants(byQuery, this.sortField, this.sortDir);
   }
 
   onSortChange(field: 'name' | 'price') {

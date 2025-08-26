@@ -259,3 +259,11 @@ a.mat-mdc-button {
   text-decoration: underline dashed;
   opacity: 0.9;
 }
+
+.w-full {
+  width: 100%;
+  display: block; /* ensures it spans the whole line */
+  box-sizing: border-box; /* keeps padding/borders from overflowing */
+}
+
+mark { background: #fde68a; padding: 0 2px; border-radius: 2px; }

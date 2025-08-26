@@ -14,6 +14,7 @@
     <div class="toolbar-grid">
       <div class="toolbar-labels">
         <div>Filter by Categories</div>
+        <div>Search</div>
         <div>Sort by</div>
         <div>Direction</div>
       </div>
@@ -26,23 +27,31 @@
           (selectionChange)="onSelectionChange($event)">
         </app-category-select>
 
-        <mat-form-field appearance="fill" class="sort-dropdown">
-          <mat-select [(ngModel)]="sortField" (ngModelChange)="updateFilteredPlants()">
+        <mat-form-field class="search-control" appearance="fill">
+          <mat-label>Search plants</mat-label>
+          <input matInput [formControl]="search" placeholder="Search…" aria-label="Search plants">
+          <button *ngIf="search.value"
+                  matSuffix mat-icon-button aria-label="Clear search"
+                  (click)="search.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-form-field>
+
+        <mat-form-field class="sort-control" appearance="fill">
+          <mat-label>Sort by</mat-label>
+          <mat-select [value]="sortField" (selectionChange)="onSortChange($event.value)">
             <mat-option value="name">Name</mat-option>
             <mat-option value="price">Price</mat-option>
           </mat-select>
         </mat-form-field>
 
-        <div class="sort-toggle-wrap">
-          <mat-button-toggle-group
-            name="sortDir"
-            [(ngModel)]="sortDir"
-            (ngModelChange)="updateFilteredPlants()"
-            aria-label="Sort direction">
-            <mat-button-toggle value="asc">Asc</mat-button-toggle>
-            <mat-button-toggle value="desc">Desc</mat-button-toggle>
-          </mat-button-toggle-group>
-        </div>
+        <mat-button-toggle-group
+          class="direction-control"
+          [(ngModel)]="sortDir"
+          (change)="updateFilteredPlants()">
+          <mat-button-toggle value="asc">Asc</mat-button-toggle>
+          <mat-button-toggle value="desc">Desc</mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
     </div>
 
@@ -67,14 +76,18 @@
 
         <h3>
           <ng-container *ngIf="safeHref(plant.infoUrl); else noLink">
-            <a [href]="plant.infoUrl" target="_blank" rel="noopener noreferrer">
-              {{ plant.name }}
+            <a [href]="plant.infoUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              [innerHTML]="plant.name | highlight:search.value">
             </a>
           </ng-container>
-          <ng-template #noLink>{{ plant.name }}</ng-template>
+          <ng-template #noLink>
+            <span [innerHTML]="plant.name | highlight:search.value"></span>
+          </ng-template>
         </h3>
 
-        <p>{{ plant.description }}</p>
+        <p [innerHTML]="plant.description | highlight:search.value"></p>
 
         <p class="price-available">
           <strong>Price:</strong> ${{ plant.price }} &nbsp;|&nbsp;
