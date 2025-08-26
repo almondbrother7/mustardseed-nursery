@@ -31,10 +31,11 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
   categories: Category[] = [];
   selectedIndex = 0;
   selectedCategory!: string;
-  filteredByCategoryMap: { [slug: string]: Plant[] } = {};
-  sortOrder: 'name' | 'price' = 'name';
+  filteredByCategoryMap: Record<string, Plant[]> = {};
+  sortField: 'name' | 'price' = 'name';
   sortDir: 'asc' | 'desc' = 'asc';
   showOutOfStock = true;
+  private query = '';
 
   constructor(private router: Router,
     private inventoryService: InventoryService,
@@ -45,7 +46,7 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     const cfg = this.configService.defaults;
-    this.sortOrder = cfg.sortField;
+    this.sortField = cfg.sortField;
     this.sortDir = cfg.sortDir;
     this.showOutOfStock = cfg.showOutOfStock;
 
@@ -89,25 +90,24 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
   }
 
   private recompute(): void {
-    const sorted = sortPlants(this.allPlants, this.sortOrder, this.sortDir);
+    const sorted = sortPlants(this.allPlants, this.sortField, this.sortDir);
     const visible = this.showOutOfStock
       ? sorted
       : sorted.filter(p => (p.inventory ?? 0) > 0);
 
     this.plants = visible;
-    this.buildCategoryMap();
+    this.rebuildCategoryBuckets();
   }
 
-buildCategoryMap(): void {
-    this.filteredByCategoryMap = this.categories.reduce((acc, category) => {
-      acc[category.slug] = this.plants.filter(plant =>
-        plant.categories?.includes(category.slug)
-      );
+  private rebuildCategoryBuckets(): void {
+    const sorted = sortPlants(this.allPlants, this.sortField, this.sortDir);
+    this.filteredByCategoryMap = this.categories.reduce((acc, c) => {
+      acc[c.slug] = sorted.filter(p => (p.categories ?? []).includes(c.slug));
       return acc;
-    }, {} as { [slug: string]: Plant[] });
+    }, {} as Record<string, Plant[]>);
 
-    if (!this.selectedCategory && this.categories.length) {
-      this.selectedCategory = this.categories[0].slug;
+    if (!this.selectedCategory || !this.categories.some(c => c.slug === this.selectedCategory)) {
+      this.selectedCategory = this.categories[0]?.slug ?? null;
     }
   }
 

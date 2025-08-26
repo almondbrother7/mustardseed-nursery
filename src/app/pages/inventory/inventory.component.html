@@ -36,7 +36,7 @@
         <div class="inv-toolbar-right">
           <mat-form-field appearance="fill" class="sort-dropdown">
             <mat-label>Sort by</mat-label>
-            <mat-select [(ngModel)]="sortOrder" (ngModelChange)="applyFilterSort()">
+            <mat-select [(ngModel)]="sortField" (ngModelChange)="applyFilterSort()">
               <mat-option value="name">Name</mat-option>
               <mat-option value="price">Price</mat-option>
             </mat-select>
