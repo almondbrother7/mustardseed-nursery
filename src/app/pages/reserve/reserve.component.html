@@ -12,13 +12,13 @@
 
     <!-- Toolbar -->
     <div class="toolbar-grid">
-      <div class="toolbar-labels">
+      <!-- LABELS ROW -->
+      <div class="toolbar-labels toolbar-labels--lean">
         <div>Filter by Categories</div>
         <div>Search</div>
-        <div>Sort by</div>
-        <div>Direction</div>
       </div>
 
+      <!-- CONTROLS ROW -->
       <div class="toolbar-controls">
         <app-category-select
           class="category-control"
@@ -29,11 +29,15 @@
 
         <mat-form-field class="search-control" appearance="fill">
           <mat-label>Search plants</mat-label>
-          <input matInput [formControl]="search" placeholder="Search…" aria-label="Search plants">
+          <input matInput 
+            [formControl]="search" 
+            placeholder="Search…"
+            aria-label="Search plants" />
           <button *ngIf="search.value"
-                  matSuffix mat-icon-button aria-label="Clear search"
-                  (click)="search.setValue('')">
-            <mat-icon>close</mat-icon>
+            matSuffix mat-icon-button 
+            aria-label="Clear search"
+            (click)="search.setValue('')">
+              <mat-icon>close</mat-icon>
           </button>
         </mat-form-field>
 
@@ -52,6 +56,13 @@
           <mat-button-toggle value="asc">Asc</mat-button-toggle>
           <mat-button-toggle value="desc">Desc</mat-button-toggle>
         </mat-button-toggle-group>
+
+        <mat-checkbox
+          class="oos-control"
+          [(ngModel)]="showOutOfStock"
+          (change)="updateFilteredPlants()">
+          Show out of stock
+        </mat-checkbox>
       </div>
     </div>
 

@@ -1,8 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { FormControl } from '@angular/forms';
-
 import { combineLatest } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -24,6 +22,7 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   filteredPlants: Plant[] = [];
   categories: Category[] = [];
   selectedCategories: string[] = []; // slugs
+  showOutOfStock = false;
 
   holdHours: number = 72;
   customer = { name: '', email: '', message: '' };
@@ -52,6 +51,8 @@ export class ReserveComponent implements OnInit, AfterViewInit {
     const cfg = this.configService.defaults;
     this.sortField = cfg.sortField;
     this.sortDir = cfg.sortDir;
+    const urlOos = this.route.snapshot.queryParamMap.get('oos') === '1';
+    this.showOutOfStock = urlOos;
 
     combineLatest([
       this.inventoryService.getAllCategories(),
@@ -84,9 +85,16 @@ export class ReserveComponent implements OnInit, AfterViewInit {
     this.route.queryParamMap.subscribe(p => {
       const q = p.get('q') || '';
       if (q !== this.search.value) this.search.setValue(q, { emitEvent: true });
+
+      // Keep OOS in sync if the user hits a shared link changing ?oos
+      const oos = p.get('oos') === '1';
+      if (oos !== this.showOutOfStock) {
+        this.showOutOfStock = oos;
+        this.updateFilteredPlants();
+      }
     });
 
-    // input -> filter (+ update URL)
+    // input -> filter (+ update URL ?q=)
     this.search.valueChanges.pipe(
       debounceTime(250),
       distinctUntilChanged()
@@ -110,10 +118,17 @@ export class ReserveComponent implements OnInit, AfterViewInit {
   }
 
   updateFilteredPlants(): void {
-    const byCategory = !this.selectedCategories.length
+    // Out of stock filter
+    const base = this.showOutOfStock
       ? this.plants
-      : this.plants.filter(p => (p.categories ?? []).some(c => this.selectedCategories.includes(c)));
+      : this.plants.filter(p => (p.inventory ?? 0) >= 1);
 
+    // Category filter
+    const byCategory = !this.selectedCategories.length
+      ? base
+      : base.filter(p => (p.categories ?? []).some(c => this.selectedCategories.includes(c)));
+
+    // Search filter
     const q = this.query;
     const byQuery = !q ? byCategory : byCategory.filter(p => {
       const name = (p.name ?? '').toLowerCase();

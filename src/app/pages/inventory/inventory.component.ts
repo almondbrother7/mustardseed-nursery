@@ -96,18 +96,21 @@ export class PlantInventoryComponent implements OnInit, AfterViewInit {
       : sorted.filter(p => (p.inventory ?? 0) > 0);
 
     this.plants = visible;
-    this.rebuildCategoryBuckets();
+    this.rebuildCategoryBuckets(visible);
   }
 
-  private rebuildCategoryBuckets(): void {
-    const sorted = sortPlants(this.allPlants, this.sortField, this.sortDir);
+  private rebuildCategoryBuckets(sourcePlants: Plant[]): void {
+    const sorted = sortPlants(sourcePlants, this.sortField, this.sortDir);
     this.filteredByCategoryMap = this.categories.reduce((acc, c) => {
       acc[c.slug] = sorted.filter(p => (p.categories ?? []).includes(c.slug));
       return acc;
     }, {} as Record<string, Plant[]>);
 
-    if (!this.selectedCategory || !this.categories.some(c => c.slug === this.selectedCategory)) {
-      this.selectedCategory = this.categories[0]?.slug ?? null;
+    if (
+      !this.selectedCategory ||
+      !this.categories.some(c => c.slug === this.selectedCategory)
+    ) {
+      this.selectedCategory = this.categories[0]?.slug ?? null as any;
     }
   }
 
